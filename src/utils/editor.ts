@@ -29,18 +29,16 @@ export const changeSelectTextStatus = (
 ) => {
   const [start, end] = getCursorPosition(editor)
   const { symbol, desc } = textStatusObj[type]
+  let val = mdStr
   if (start === end) {
-    const val = `${mdStr.slice(0, start)}${symbol}${desc}${symbol}${mdStr.slice(
-      end
-    )}`
-    setMdStr(val)
+    val = `${mdStr.slice(0, start)}${symbol}${desc}${symbol}${mdStr.slice(end)}`
   } else {
-    const val = `${mdStr.slice(0, start)}${symbol}${mdStr.slice(
+    val = `${mdStr.slice(0, start)}${symbol}${mdStr.slice(
       start,
       end
     )}${symbol}${mdStr.slice(end)}`
-    setMdStr(val)
   }
+  setMdStr(val)
 }
 
 /**
@@ -58,16 +56,118 @@ export const changeSelectLineStatus = (
 ) => {
   const [start, end] = getCursorPosition(editor)
   const { symbol, desc } = lineStatusObj[type]
+  let val = mdStr
   if (start === end) {
-    const val = `${mdStr.slice(0, start)}\n${symbol}${desc}\n${mdStr.slice(
-      end
-    )}`
+    val = `${mdStr.slice(0, start)}\n${symbol}${desc}\n${mdStr.slice(end)}`
     setMdStr(val)
   } else {
-    const val = `${mdStr.slice(0, start)}\n${symbol}${mdStr.slice(
+    val = `${mdStr.slice(0, start)}\n${symbol}${mdStr.slice(
       start,
       end
     )}\n${mdStr.slice(end)}`
-    setMdStr(val)
   }
+  setMdStr(val)
+}
+
+/**
+ * 添加代码块
+ * @param editor 编辑器元素
+ * @param mdStr 编辑器内容
+ * @param setMdStr 修改编辑器内容
+ * @param language 代码语言
+ */
+export const addCodeBlock = (
+  editor: HTMLTextAreaElement,
+  mdStr: string,
+  setMdStr: (v: string) => void,
+  language: string
+) => {
+  const [start, end] = getCursorPosition(editor)
+  let val = mdStr
+  if (start === end) {
+    val = `${mdStr.slice(0, start)}\n\`\`\`${language}\n\n\`\`\`\n${mdStr.slice(
+      end
+    )}`
+  } else {
+    val = `${mdStr.slice(0, start)}\n\`\`\`${language}\n${mdStr.slice(
+      start,
+      end
+    )}\n\`\`\`\n${mdStr.slice(end)}`
+  }
+  setMdStr(val)
+}
+
+/**
+ * 添加链接
+ * @param editor 编辑器元素
+ * @param mdStr 编辑器内容
+ * @param setMdStr 修改编辑器内容
+ */
+export const addLink = (
+  editor: HTMLTextAreaElement,
+  mdStr: string,
+  setMdStr: (v: string) => void
+) => {
+  const [start, end] = getCursorPosition(editor)
+  let val = mdStr
+  if (start === end) {
+    val = `${mdStr.slice(0, start)}[链接描述文字](url)${mdStr.slice(end)}`
+  } else {
+    val = `${mdStr.slice(0, start)}[${mdStr.slice(
+      start,
+      end
+    )}](url)${mdStr.slice(end)}`
+  }
+  setMdStr(val)
+}
+
+/**
+ * 添加表格
+ * @param editor 编辑器元素
+ * @param mdStr 编辑器内容
+ * @param setMdStr 修改编辑器内容
+ */
+export const addTable = (
+  editor: HTMLTextAreaElement,
+  mdStr: string,
+  setMdStr: (v: string) => void
+) => {
+  const [start, end] = getCursorPosition(editor)
+  let val = mdStr
+  if (start === end) {
+    val = `${mdStr.slice(
+      0,
+      start
+    )}\n|  |  |\n| --- | --- |\n|  |  |${mdStr.slice(end)}`
+  } else {
+    val = `${mdStr.slice(0, start)}\n| ${mdStr.slice(
+      start,
+      end
+    )} |  |\n| --- | --- |\n|  |  |${mdStr.slice(end)}`
+  }
+  setMdStr(val)
+}
+
+/**
+ * 添加图片
+ * @param editor 编辑器元素
+ * @param mdStr 编辑器内容
+ * @param setMdStr 修改编辑器内容
+ */
+export const addImage = (
+  editor: HTMLTextAreaElement,
+  mdStr: string,
+  setMdStr: (v: string) => void
+) => {
+  const [start, end] = getCursorPosition(editor)
+  let val = mdStr
+  if (start === end) {
+    val = `${mdStr.slice(0, start)}\n![图片描述](url)\n${mdStr.slice(end)}`
+  } else {
+    val = `${mdStr.slice(0, start)}\n![${mdStr.slice(
+      start,
+      end
+    )}](url)\n${mdStr.slice(end)}`
+  }
+  setMdStr(val)
 }

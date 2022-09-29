@@ -27,7 +27,8 @@ export const textStatusObj = {
 export enum LINE_STATUS {
   UL, // 无序列表
   OL, // 有序列表
-  TODO // 任务列表
+  TODO, // 任务列表
+  QUOTE // 引用
 }
 
 export const lineStatusObj = {
@@ -42,5 +43,18 @@ export const lineStatusObj = {
   [LINE_STATUS.TODO]: {
     desc: '任务列表',
     symbol: '- [x]'
+  },
+  [LINE_STATUS.QUOTE]: {
+    desc: '引用',
+    symbol: '> '
   }
+}
+
+export enum CODE_THEME {
+  a11yDark = 'a11y-dark',
+  a11yLigin = 'a11y-lignt',
+  agate = 'agate',
+  anOldHope = 'an-old-hope',
+  androidstudio = 'androidstudio',
+  arduinoLight = 'arduino-light'
 }
