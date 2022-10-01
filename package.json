@@ -11,8 +11,10 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "daisyui": "^2.31.0",
     "highlight.js": "^11.6.0",
     "markdown-it": "^13.0.1",
+    "markdown-it-deflist": "^2.1.0",
     "markdown-it-mark": "^3.0.1",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
@@ -23,6 +25,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
+    "@tailwindcss/line-clamp": "^0.4.2",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^18.7.23",
     "@types/react": "^18.0.17",

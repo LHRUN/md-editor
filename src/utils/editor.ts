@@ -70,34 +70,6 @@ export const changeSelectLineStatus = (
 }
 
 /**
- * 添加代码块
- * @param editor 编辑器元素
- * @param mdStr 编辑器内容
- * @param setMdStr 修改编辑器内容
- * @param language 代码语言
- */
-export const addCodeBlock = (
-  editor: HTMLTextAreaElement,
-  mdStr: string,
-  setMdStr: (v: string) => void,
-  language: string
-) => {
-  const [start, end] = getCursorPosition(editor)
-  let val = mdStr
-  if (start === end) {
-    val = `${mdStr.slice(0, start)}\n\`\`\`${language}\n\n\`\`\`\n${mdStr.slice(
-      end
-    )}`
-  } else {
-    val = `${mdStr.slice(0, start)}\n\`\`\`${language}\n${mdStr.slice(
-      start,
-      end
-    )}\n\`\`\`\n${mdStr.slice(end)}`
-  }
-  setMdStr(val)
-}
-
-/**
  * 添加链接
  * @param editor 编辑器元素
  * @param mdStr 编辑器内容

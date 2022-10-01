@@ -8,27 +8,28 @@ const Editor: React.FC = () => {
   const htmlStr = useMemo(() => MD.render(mdStr), [mdStr])
 
   return (
-    <>
+    <div>
       <Toolbar
         editorRef={editorRef.current}
         mdStr={mdStr}
         setMdStr={setMdStr}
       />
-      <div className="flex h-screen">
+      <div className="flex mt-1" style={{ height: '90vh' }}>
         <textarea
           ref={editorRef}
           value={mdStr}
           onInput={(e) => {
             setMdStr((e.target as HTMLInputElement).value)
           }}
-          className="resize-none h-full w-3/6"
+          className="textarea resize-none h-full w-3/6"
+          style={{ border: 'solid 1px #256D85' }}
         ></textarea>
         <div
-          className="h-full w-3/6"
+          className="w-3/6 h-full break-all overflow-scroll border-box"
           dangerouslySetInnerHTML={{ __html: htmlStr }}
         ></div>
       </div>
-    </>
+    </div>
   )
 }
 

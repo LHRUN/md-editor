@@ -4,6 +4,7 @@ import MarkdownItToc from 'markdown-it-toc'
 import MarkdownItSub from 'markdown-it-sub'
 import MarkdownItSup from 'markdown-it-sup'
 import MarkdownItMark from 'markdown-it-mark'
+import MarkdownItDeflist from 'markdown-it-deflist'
 
 export const MD = new MarkdownIt({
   html: true, // 在源码中启用 HTML 标签
@@ -18,6 +19,7 @@ export const MD = new MarkdownIt({
   .use(MarkdownItSub)
   .use(MarkdownItSup)
   .use(MarkdownItMark)
+  .use(MarkdownItDeflist)
 
 const highlightFormatCode = (str: string, lang: string): string => {
   // 判断是否添加代码片段
