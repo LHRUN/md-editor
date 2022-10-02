@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   addImage,
   addLink,
@@ -7,6 +7,8 @@ import {
   changeSelectTextStatus
 } from '@/utils/editor'
 import { LINE_STATUS, TEXT_STATUS } from '@/utils/constants'
+
+import { Dropdown, Menu } from 'antd'
 import BoldIcon from '../icons/bold'
 import DeleteIcon from '../icons/delete'
 import ItalicIcon from '../icons/italic'
@@ -18,9 +20,11 @@ import QuoteIcon from '../icons/quote'
 import LinkIcon from '../icons/link'
 import TableIcon from '../icons/table'
 import ImgIcon from '../icons/img'
-import ProjectPanel from '../projectPanel'
+// import ProjectPanel from '../projectPanel'
 import ThemeIcon from '../icons/theme'
 import CodeThemeIcon from '../icons/codeTheme'
+
+import styles from './index.module.less'
 
 interface IProps {
   editorRef: HTMLTextAreaElement | null
@@ -29,6 +33,9 @@ interface IProps {
 }
 
 const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
+  const [codeTheme, setCodeTheme] = useState('')
+  const [mdTheme, setMdTheme] = useState('')
+
   // 点击文字改变
   const clickTextStatus = (type: TEXT_STATUS) => {
     if (editorRef) {
@@ -43,112 +50,114 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
     }
   }
 
+  const CodeThemeMenu = useMemo(() => {
+    return (
+      <Menu>
+        <Menu.Item>菜单项一</Menu.Item>
+        <Menu.Item>菜单项二</Menu.Item>
+      </Menu>
+    )
+  }, [codeTheme])
+
+  const MdThemeMenu = useMemo(() => {
+    return (
+      <Menu>
+        <Menu.Item>菜单项一</Menu.Item>
+        <Menu.Item>菜单项二</Menu.Item>
+      </Menu>
+    )
+  }, [mdTheme])
+
   return (
-    <div className="flex justify-between items-center">
-      <ul
-        className="menu menu-horizontal bg-base-100 rounded-box p-0 m-0"
-        style={{ backgroundColor: '#256D85' }}
+    <div className={styles.toolBar}>
+      <div
+        className={styles.item}
+        onClick={() => clickTextStatus(TEXT_STATUS.STRONG)}
       >
-        <li>
-          <a onClick={() => clickTextStatus(TEXT_STATUS.STRONG)}>
-            <BoldIcon />
-          </a>
-        </li>
-        <li>
-          <a onClick={() => clickTextStatus(TEXT_STATUS.DELETE)}>
-            <DeleteIcon />
-          </a>
-        </li>
-        <li>
-          <a onClick={() => clickTextStatus(TEXT_STATUS.ITALIC)}>
-            <ItalicIcon />
-          </a>
-        </li>
-        <li>
-          <a onClick={() => clickTextStatus(TEXT_STATUS.UNDERLINE)}>
-            <UnderlineIcon />
-          </a>
-        </li>
-        <li>
-          <a onClick={() => clickLineStatus(LINE_STATUS.OL)}>
-            <OlIcon />
-          </a>
-        </li>
-        <li>
-          <a onClick={() => clickLineStatus(LINE_STATUS.UL)}>
-            <UlIcon />
-          </a>
-        </li>
-        <li>
-          <a onClick={() => clickLineStatus(LINE_STATUS.TODO)}>
-            <TodoIcon />
-          </a>
-        </li>
-        <li>
-          <a onClick={() => clickLineStatus(LINE_STATUS.QUOTE)}>
-            <QuoteIcon />
-          </a>
-        </li>
-        <li>
-          <a
-            onClick={() => {
-              if (editorRef) {
-                addLink(editorRef, mdStr, setMdStr)
-              }
-            }}
-          >
-            <LinkIcon />
-          </a>
-        </li>
-        <li>
-          <a
-            onClick={() => {
-              if (editorRef) {
-                addTable(editorRef, mdStr, setMdStr)
-              }
-            }}
-          >
-            <TableIcon />
-          </a>
-        </li>
-        <li>
-          <a
-            onClick={() => {
-              if (editorRef) {
-                addImage(editorRef, mdStr, setMdStr)
-              }
-            }}
-          >
-            <ImgIcon />
-          </a>
-        </li>
-        <li>
-          <a>
-            <div className="dropdown">
-              <label tabIndex={0} className="">
-                <ThemeIcon />
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                <li>
-                  <a>Item 1</a>
-                </li>
-                <li>
-                  <a>Item 2</a>
-                </li>
-              </ul>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a>
-            <CodeThemeIcon />
-          </a>
-        </li>
-      </ul>
-      <ProjectPanel />
+        <BoldIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => clickTextStatus(TEXT_STATUS.DELETE)}
+      >
+        <DeleteIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => clickTextStatus(TEXT_STATUS.ITALIC)}
+      >
+        <ItalicIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => clickTextStatus(TEXT_STATUS.UNDERLINE)}
+      >
+        <UnderlineIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => clickLineStatus(LINE_STATUS.OL)}
+      >
+        <OlIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => clickLineStatus(LINE_STATUS.UL)}
+      >
+        <UlIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => clickLineStatus(LINE_STATUS.TODO)}
+      >
+        <TodoIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => clickLineStatus(LINE_STATUS.QUOTE)}
+      >
+        <QuoteIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => {
+          if (editorRef) {
+            addLink(editorRef, mdStr, setMdStr)
+          }
+        }}
+      >
+        <LinkIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => {
+          if (editorRef) {
+            addTable(editorRef, mdStr, setMdStr)
+          }
+        }}
+      >
+        <TableIcon />
+      </div>
+      <div
+        className={styles.item}
+        onClick={() => {
+          if (editorRef) {
+            addImage(editorRef, mdStr, setMdStr)
+          }
+        }}
+      >
+        <ImgIcon />
+      </div>
+      <div className={styles.item}>
+        <Dropdown placement="bottom" overlay={MdThemeMenu}>
+          <ThemeIcon />
+        </Dropdown>
+      </div>
+      <div className={styles.item}>
+        <Dropdown placement="bottom" overlay={CodeThemeMenu}>
+          <CodeThemeIcon />
+        </Dropdown>
+      </div>
     </div>
   )
 }

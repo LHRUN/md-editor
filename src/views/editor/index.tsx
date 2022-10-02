@@ -1,6 +1,13 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { MD } from '@/utils/md'
+
+import { Layout, Input, Col, Row } from 'antd'
 import Toolbar from '@/components/toolbar'
+
+import styles from './index.module.less'
+
+const { Header, Content } = Layout
+const { TextArea } = Input
 
 const Editor: React.FC = () => {
   const [mdStr, setMdStr] = useState('')
@@ -8,28 +15,36 @@ const Editor: React.FC = () => {
   const htmlStr = useMemo(() => MD.render(mdStr), [mdStr])
 
   return (
-    <div>
-      <Toolbar
-        editorRef={editorRef.current}
-        mdStr={mdStr}
-        setMdStr={setMdStr}
-      />
-      <div className="flex mt-1" style={{ height: '90vh' }}>
-        <textarea
-          ref={editorRef}
-          value={mdStr}
-          onInput={(e) => {
-            setMdStr((e.target as HTMLInputElement).value)
-          }}
-          className="textarea resize-none h-full w-3/6"
-          style={{ border: 'solid 1px #256D85' }}
-        ></textarea>
-        <div
-          className="w-3/6 h-full break-all overflow-scroll border-box"
-          dangerouslySetInnerHTML={{ __html: htmlStr }}
-        ></div>
-      </div>
-    </div>
+    <Layout className={styles.layout}>
+      <Header className={styles.layoutHeader}>
+        <Toolbar
+          editorRef={editorRef.current}
+          mdStr={mdStr}
+          setMdStr={setMdStr}
+        />
+      </Header>
+      <Content>
+        <Row>
+          <Col span={12}>
+            <TextArea
+              autoSize
+              bordered={false}
+              ref={editorRef}
+              value={mdStr}
+              onInput={(e) => {
+                setMdStr((e.target as HTMLInputElement).value)
+              }}
+            ></TextArea>
+          </Col>
+          <Col span={12}>
+            <div
+              className={styles.write}
+              dangerouslySetInnerHTML={{ __html: htmlStr }}
+            ></div>
+          </Col>
+        </Row>
+      </Content>
+    </Layout>
   )
 }
 
