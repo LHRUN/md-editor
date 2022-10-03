@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   addImage,
   addLink,
@@ -6,9 +6,14 @@ import {
   changeSelectLineStatus,
   changeSelectTextStatus
 } from '@/utils/editor'
-import { LINE_STATUS, TEXT_STATUS } from '@/utils/constants'
+import {
+  CODE_THEME,
+  LINE_STATUS,
+  MD_THEME,
+  TEXT_STATUS
+} from '@/utils/constants'
 
-import { Dropdown, Menu } from 'antd'
+import { Dropdown, Menu, message } from 'antd'
 import BoldIcon from '../icons/bold'
 import DeleteIcon from '../icons/delete'
 import ItalicIcon from '../icons/italic'
@@ -21,8 +26,6 @@ import LinkIcon from '../icons/link'
 import TableIcon from '../icons/table'
 import ImgIcon from '../icons/img'
 // import ProjectPanel from '../projectPanel'
-import ThemeIcon from '../icons/theme'
-import CodeThemeIcon from '../icons/codeTheme'
 
 import styles from './index.module.less'
 
@@ -50,22 +53,72 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
     }
   }
 
-  const CodeThemeMenu = useMemo(() => {
-    return (
-      <Menu>
-        <Menu.Item>菜单项一</Menu.Item>
-        <Menu.Item>菜单项二</Menu.Item>
-      </Menu>
+  const CodeThemeMenu = useMemo(
+    () => (
+      <Menu
+        onClick={({ key }) => setCodeTheme(key)}
+        items={Object.keys(CODE_THEME).map((key) => ({
+          label: CODE_THEME[key],
+          key
+        }))}
+        selectedKeys={[codeTheme]}
+      />
+    ),
+    [codeTheme]
+  )
+
+  useEffect(() => {
+    const head = document.head
+    const oldLink = head.getElementsByClassName('highlightjs-style-link')
+
+    if (oldLink.length) head.removeChild(oldLink[0])
+
+    const newLink = document.createElement('link')
+    newLink.setAttribute('rel', 'stylesheet')
+    newLink.setAttribute('type', 'text/css')
+    newLink.setAttribute('class', 'highlightjs-style-link')
+    newLink.setAttribute(
+      'href',
+      `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/${codeTheme}.min.css`
     )
+    newLink.onerror = () => {
+      message.error('主题获取失败，请稍后重试或尝试其它主题')
+    }
+    head.appendChild(newLink)
   }, [codeTheme])
 
-  const MdThemeMenu = useMemo(() => {
-    return (
-      <Menu>
-        <Menu.Item>菜单项一</Menu.Item>
-        <Menu.Item>菜单项二</Menu.Item>
-      </Menu>
+  const MdThemeMenu = useMemo(
+    () => (
+      <Menu
+        onClick={({ key }) => setMdTheme(key)}
+        items={Object.keys(MD_THEME).map((key) => ({
+          label: MD_THEME[key],
+          key
+        }))}
+        selectedKeys={[mdTheme]}
+      />
+    ),
+    [mdTheme]
+  )
+
+  useEffect(() => {
+    const head = document.head
+    const oldLink = head.getElementsByClassName('markdownTheme-style-link')
+
+    if (oldLink.length) head.removeChild(oldLink[0])
+
+    const newLink = document.createElement('link')
+    newLink.setAttribute('rel', 'stylesheet')
+    newLink.setAttribute('type', 'text/css')
+    newLink.setAttribute('class', 'markdownTheme-style-link')
+    newLink.setAttribute(
+      'href',
+      `https://lpyexplore.gitee.io/taobao_staticweb/css/theme/${mdTheme}.css`
     )
+    newLink.onerror = () => {
+      message.error('主题获取失败，请稍后重试或尝试其它主题')
+    }
+    head.appendChild(newLink)
   }, [mdTheme])
 
   return (
@@ -149,13 +202,17 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
         <ImgIcon />
       </div>
       <div className={styles.item}>
-        <Dropdown placement="bottom" overlay={MdThemeMenu}>
-          <ThemeIcon />
+        <Dropdown
+          placement="bottom"
+          trigger={['click']}
+          overlay={CodeThemeMenu}
+        >
+          <div>CodeTheme</div>
         </Dropdown>
       </div>
       <div className={styles.item}>
-        <Dropdown placement="bottom" overlay={CodeThemeMenu}>
-          <CodeThemeIcon />
+        <Dropdown placement="bottom" trigger={['click']} overlay={MdThemeMenu}>
+          <div>MdTheme</div>
         </Dropdown>
       </div>
     </div>

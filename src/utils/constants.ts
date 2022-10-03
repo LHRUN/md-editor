@@ -42,7 +42,7 @@ export const lineStatusObj = {
   },
   [LINE_STATUS.TODO]: {
     desc: '任务列表',
-    symbol: '- [x]'
+    symbol: '- [x] '
   },
   [LINE_STATUS.QUOTE]: {
     desc: '引用',
@@ -50,11 +50,16 @@ export const lineStatusObj = {
   }
 }
 
-export enum CODE_THEME {
-  a11yDark = 'a11y-dark',
-  a11yLigin = 'a11y-lignt',
-  agate = 'agate',
-  anOldHope = 'an-old-hope',
-  androidstudio = 'androidstudio',
-  arduinoLight = 'arduino-light'
+export const CODE_THEME = {
+  a11yDark: 'a11y-dark',
+  a11yLigin: 'a11y-lignt',
+  agate: 'agate',
+  anOldHope: 'an-old-hope',
+  androidstudio: 'androidstudio',
+  arduinoLight: 'arduino-light'
+}
+
+export const MD_THEME = {
+  GITHUB: 'github',
+  MAIZE: 'maize'
 }

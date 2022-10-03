@@ -11,7 +11,7 @@ export const MD = new MarkdownIt({
   html: true, // 在源码中启用 HTML 标签
   linkify: true, // 将类似 URL 的文本自动转换为链接
   breaks: true, // 转换段落里的 '\n' 到 <br>
-  typographer: true, // 启用一些语言中立的替换 + 引号美化
+  // typographer: true, // 启用一些语言中立的替换 + 引号美化
   highlight: function (str, lang) {
     return highlightFormatCode(str, lang)
   }
