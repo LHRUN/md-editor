@@ -24,38 +24,20 @@ export const MD = new MarkdownIt({
   .use(MarkdownItTaskLists)
 
 const highlightFormatCode = (str: string, lang: string): string => {
-  // 判断是否添加代码片段
+  let lines: string[] = []
   if (lang && hljs.getLanguage(lang)) {
+    // 有代码语言
     try {
-      // 得到经过highlight.js之后的html代码
       const preCode = hljs.highlight(lang, str, true).value
-      // 以换行进行分割
-      const lines = preCode.split(/\n/).slice(0, -1)
-      // 添加自定义行号
-      let html = lines
-        .map((item, index) => {
-          return (
-            '<li><span class="line-num" data-line="' +
-            (index + 1) +
-            '"></span>' +
-            item +
-            '</li>'
-          )
-        })
-        .join('')
-      html = '<ol>' + html + '</ol>'
-      // 添加代码语言
-      if (lines.length) {
-        html += '<b class="name">' + lang + '</b>'
-      }
-      return '<pre class="hljs"><code>' + html + '</code></pre>'
+      lines = preCode.split(/\n/).slice(0, -1)
     } catch (e) {
       console.error(e)
     }
+  } else {
+    // 未添加代码语言
+    const preCode = MD.utils.escapeHtml(str)
+    lines = preCode.split(/\n/).slice(0, -1)
   }
-  // 未添加代码语言，此处与上面同理
-  const preCode = MD.utils.escapeHtml(str)
-  const lines = preCode.split(/\n/).slice(0, -1)
   let html = lines
     .map((item, index) => {
       return (

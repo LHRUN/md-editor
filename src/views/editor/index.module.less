@@ -1,5 +1,10 @@
 .layout {
   min-height: 100%;
+  :global {
+    .ant-row {
+      height: calc(100vh - 32px);
+    }
+  }
 }
 .layoutHeader {
   height: 32px;
@@ -7,8 +12,32 @@
   background-color: #AEDBCE;
   display: flex;
 }
+.editorTextarea {
+  height: 100%;
+  width: 100%;
+  resize: none;
+  border-width: 0px 1px 0px 0px;
+  border-top-style: initial;
+  border-bottom-style: initial;
+  border-left-style: initial;
+  border-top-color: initial;
+  border-bottom-color: initial;
+  border-left-color: initial;
+  border-image: initial;
+  border-right-style: solid;
+  border-right-color: rgb(238, 238, 238);
+  background-color: rgb(248, 248, 250);
+  padding: 20px;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 15px;
+
+}
 .write {
   background-color: #fff;
   word-break: break-all;
   height: 100%;
+  padding: 20px 20px 40px;
+  overflow: auto;
+  box-sizing: border-box;
 }

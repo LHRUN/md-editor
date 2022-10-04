@@ -13,7 +13,7 @@ import {
   TEXT_STATUS
 } from '@/utils/constants'
 
-import { Dropdown, Menu, message } from 'antd'
+import { Dropdown, Menu } from 'antd'
 import BoldIcon from '../icons/bold'
 import DeleteIcon from '../icons/delete'
 import ItalicIcon from '../icons/italic'
@@ -28,6 +28,7 @@ import ImgIcon from '../icons/img'
 // import ProjectPanel from '../projectPanel'
 
 import styles from './index.module.less'
+import { switchLink } from '@/utils/common'
 
 interface IProps {
   editorRef: HTMLTextAreaElement | null
@@ -36,8 +37,8 @@ interface IProps {
 }
 
 const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
-  const [codeTheme, setCodeTheme] = useState('')
-  const [mdTheme, setMdTheme] = useState('')
+  const [codeTheme, setCodeTheme] = useState(CODE_THEME.a11yDark)
+  const [mdTheme, setMdTheme] = useState(MD_THEME.CEMENT)
 
   // 点击文字改变
   const clickTextStatus = (type: TEXT_STATUS) => {
@@ -56,10 +57,10 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
   const CodeThemeMenu = useMemo(
     () => (
       <Menu
-        onClick={({ key }) => setCodeTheme(key)}
-        items={Object.keys(CODE_THEME).map((key) => ({
-          label: CODE_THEME[key],
-          key
+        onClick={({ key }) => setCodeTheme(Reflect.get(CODE_THEME, key))}
+        items={Object.values(CODE_THEME).map((val) => ({
+          label: val,
+          key: val
         }))}
         selectedKeys={[codeTheme]}
       />
@@ -68,32 +69,21 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
   )
 
   useEffect(() => {
-    const head = document.head
-    const oldLink = head.getElementsByClassName('highlightjs-style-link')
-
-    if (oldLink.length) head.removeChild(oldLink[0])
-
-    const newLink = document.createElement('link')
-    newLink.setAttribute('rel', 'stylesheet')
-    newLink.setAttribute('type', 'text/css')
-    newLink.setAttribute('class', 'highlightjs-style-link')
-    newLink.setAttribute(
-      'href',
-      `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/${codeTheme}.min.css`
-    )
-    newLink.onerror = () => {
-      message.error('主题获取失败，请稍后重试或尝试其它主题')
+    if (codeTheme) {
+      switchLink(
+        'code-style',
+        `https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/${codeTheme}.min.css`
+      )
     }
-    head.appendChild(newLink)
   }, [codeTheme])
 
   const MdThemeMenu = useMemo(
     () => (
       <Menu
-        onClick={({ key }) => setMdTheme(key)}
-        items={Object.keys(MD_THEME).map((key) => ({
-          label: MD_THEME[key],
-          key
+        onClick={({ key }) => setMdTheme(Reflect.get(MD_THEME, key))}
+        items={Object.values(MD_THEME).map((val) => ({
+          label: val,
+          key: val
         }))}
         selectedKeys={[mdTheme]}
       />
@@ -102,23 +92,9 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
   )
 
   useEffect(() => {
-    const head = document.head
-    const oldLink = head.getElementsByClassName('markdownTheme-style-link')
-
-    if (oldLink.length) head.removeChild(oldLink[0])
-
-    const newLink = document.createElement('link')
-    newLink.setAttribute('rel', 'stylesheet')
-    newLink.setAttribute('type', 'text/css')
-    newLink.setAttribute('class', 'markdownTheme-style-link')
-    newLink.setAttribute(
-      'href',
-      `https://lpyexplore.gitee.io/taobao_staticweb/css/theme/${mdTheme}.css`
-    )
-    newLink.onerror = () => {
-      message.error('主题获取失败，请稍后重试或尝试其它主题')
+    if (mdTheme) {
+      // switchLink('md-style', `/src/assets/mdTheme/${mdTheme}.css`)
     }
-    head.appendChild(newLink)
   }, [mdTheme])
 
   return (
@@ -206,12 +182,18 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
           placement="bottom"
           trigger={['click']}
           overlay={CodeThemeMenu}
+          overlayStyle={{ maxHeight: '150px', overflow: 'scroll' }}
         >
           <div>CodeTheme</div>
         </Dropdown>
       </div>
       <div className={styles.item}>
-        <Dropdown placement="bottom" trigger={['click']} overlay={MdThemeMenu}>
+        <Dropdown
+          placement="bottom"
+          trigger={['click']}
+          overlay={MdThemeMenu}
+          overlayStyle={{ maxHeight: '150px', overflow: 'scroll' }}
+        >
           <div>MdTheme</div>
         </Dropdown>
       </div>

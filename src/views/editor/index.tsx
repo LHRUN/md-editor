@@ -26,18 +26,18 @@ const Editor: React.FC = () => {
       <Content>
         <Row>
           <Col span={12}>
-            <TextArea
-              autoSize
-              bordered={false}
+            <textarea
+              className={styles.editorTextarea}
               ref={editorRef}
               value={mdStr}
               onInput={(e) => {
                 setMdStr((e.target as HTMLInputElement).value)
               }}
-            ></TextArea>
+            ></textarea>
           </Col>
           <Col span={12}>
             <div
+              id="write"
               className={styles.write}
               dangerouslySetInnerHTML={{ __html: htmlStr }}
             ></div>
