@@ -38,7 +38,7 @@ interface IProps {
 
 const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
   const [codeTheme, setCodeTheme] = useState(CODE_THEME.a11yDark)
-  const [mdTheme, setMdTheme] = useState(MD_THEME.CEMENT)
+  const [mdTheme, setMdTheme] = useState(MD_THEME.gitlab)
 
   // 点击文字改变
   const clickTextStatus = (type: TEXT_STATUS) => {
@@ -57,7 +57,7 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
   const CodeThemeMenu = useMemo(
     () => (
       <Menu
-        onClick={({ key }) => setCodeTheme(Reflect.get(CODE_THEME, key))}
+        onClick={({ key }) => setCodeTheme(key)}
         items={Object.values(CODE_THEME).map((val) => ({
           label: val,
           key: val
@@ -80,7 +80,7 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
   const MdThemeMenu = useMemo(
     () => (
       <Menu
-        onClick={({ key }) => setMdTheme(Reflect.get(MD_THEME, key))}
+        onClick={({ key }) => setMdTheme(key)}
         items={Object.values(MD_THEME).map((val) => ({
           label: val,
           key: val
@@ -93,7 +93,7 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
 
   useEffect(() => {
     if (mdTheme) {
-      // switchLink('md-style', `/src/assets/mdTheme/${mdTheme}.css`)
+      switchLink('md-style', `/src/assets/mdTheme/${mdTheme}.css`)
     }
   }, [mdTheme])
 
@@ -177,22 +177,20 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
       >
         <ImgIcon />
       </div>
-      <div className={styles.item}>
+      <div className={`${styles.item} ${styles.largeItem}`}>
         <Dropdown
           placement="bottom"
-          trigger={['click']}
           overlay={CodeThemeMenu}
-          overlayStyle={{ maxHeight: '150px', overflow: 'scroll' }}
+          overlayStyle={{ maxHeight: '200px', overflow: 'scroll' }}
         >
           <div>CodeTheme</div>
         </Dropdown>
       </div>
-      <div className={styles.item}>
+      <div className={`${styles.item} ${styles.largeItem}`}>
         <Dropdown
           placement="bottom"
-          trigger={['click']}
           overlay={MdThemeMenu}
-          overlayStyle={{ maxHeight: '150px', overflow: 'scroll' }}
+          overlayStyle={{ maxHeight: '200px', overflow: 'scroll' }}
         >
           <div>MdTheme</div>
         </Dropdown>

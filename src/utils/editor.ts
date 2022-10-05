@@ -28,10 +28,10 @@ export const changeSelectTextStatus = (
   type: TEXT_STATUS
 ) => {
   const [start, end] = getCursorPosition(editor)
-  const { symbol, desc } = textStatusObj[type]
+  const { symbol } = textStatusObj[type]
   let val = mdStr
   if (start === end) {
-    val = `${mdStr.slice(0, start)}${symbol}${desc}${symbol}${mdStr.slice(end)}`
+    val = `${mdStr.slice(0, start)}${symbol}${symbol}${mdStr.slice(end)}`
   } else {
     val = `${mdStr.slice(0, start)}${symbol}${mdStr.slice(
       start,
@@ -55,10 +55,10 @@ export const changeSelectLineStatus = (
   type: LINE_STATUS
 ) => {
   const [start, end] = getCursorPosition(editor)
-  const { symbol, desc } = lineStatusObj[type]
+  const { symbol } = lineStatusObj[type]
   let val = mdStr
   if (start === end) {
-    val = `${mdStr.slice(0, start)}\n${symbol}${desc}\n${mdStr.slice(end)}`
+    val = `${mdStr.slice(0, start)}\n${symbol}\n${mdStr.slice(end)}`
     setMdStr(val)
   } else {
     val = `${mdStr.slice(0, start)}\n${symbol}${mdStr.slice(

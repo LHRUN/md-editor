@@ -55,7 +55,7 @@ export const lineStatusObj = {
 // 代码主题
 export const CODE_THEME = {
   a11yDark: 'a11y-dark',
-  a11yLigin: 'a11y-lignt',
+  a11yLight: 'a11y-light',
   agate: 'agate',
   anOldHope: 'an-old-hope',
   androidstudio: 'androidstudio',
@@ -130,5 +130,5 @@ export const CODE_THEME = {
 
 // markdown主题
 export const MD_THEME = {
-  CEMENT: 'cement'
+  gitlab: 'gitlab'
 }

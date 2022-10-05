@@ -1,13 +1,12 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { MD } from '@/utils/md'
 
-import { Layout, Input, Col, Row } from 'antd'
+import { Layout, Col, Row } from 'antd'
 import Toolbar from '@/components/toolbar'
 
 import styles from './index.module.less'
 
 const { Header, Content } = Layout
-const { TextArea } = Input
 
 const Editor: React.FC = () => {
   const [mdStr, setMdStr] = useState('')

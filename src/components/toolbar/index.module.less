@@ -1,10 +1,22 @@
 .toolBar {
   display: flex;
+  align-items: center;
+
   .item {
     margin-right: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    width: 27px;
+    height: 27px;
+    border-radius: 5px;
+
+    &:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
+  }
+  .largeItem {
+    width: auto;
   }
 }

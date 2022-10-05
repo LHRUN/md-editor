@@ -24,31 +24,17 @@ export const MD = new MarkdownIt({
   .use(MarkdownItTaskLists)
 
 const highlightFormatCode = (str: string, lang: string): string => {
-  let lines: string[] = []
   if (lang && hljs.getLanguage(lang)) {
-    // 有代码语言
     try {
-      const preCode = hljs.highlight(lang, str, true).value
-      lines = preCode.split(/\n/).slice(0, -1)
+      return codeBlockStyle(hljs.highlight(lang, str, true).value)
     } catch (e) {
       console.error(e)
     }
-  } else {
-    // 未添加代码语言
-    const preCode = MD.utils.escapeHtml(str)
-    lines = preCode.split(/\n/).slice(0, -1)
   }
-  let html = lines
-    .map((item, index) => {
-      return (
-        '<li><span class="line-num" data-line="' +
-        (index + 1) +
-        '"></span>' +
-        item +
-        '</li>'
-      )
-    })
-    .join('')
-  html = '<ol>' + html + '</ol>'
-  return '<pre class="hljs"><code>' + html + '</code></pre>'
+
+  return codeBlockStyle(MD.utils.escapeHtml(str))
+}
+
+const codeBlockStyle = (val: string): string => {
+  return `<pre class="hljs" style="padding: 10px;border-radius: 10px;"><code>${val}</code></pre>`
 }
