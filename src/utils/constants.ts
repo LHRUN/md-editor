@@ -132,3 +132,9 @@ export const CODE_THEME = {
 export const MD_THEME = {
   gitlab: 'gitlab'
 }
+
+export enum SCROLL_SCOPE {
+  NULL,
+  EDITOR,
+  PREVIEW
+}

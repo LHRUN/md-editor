@@ -2,7 +2,7 @@
   min-height: 100%;
   :global {
     .ant-row {
-      height: calc(100vh - 32px);
+      height: calc(100vh - 38px);
     }
   }
 }
@@ -13,9 +13,34 @@
   display: flex;
   padding-left: 10px;
 }
-.editorTextarea {
+
+.content {
   height: 100%;
   width: 100%;
+  word-break: break-all;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+    height: 1px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 7px;
+    background-color: #EDE4E0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 7px;
+    background: rgba(0, 0, 0, 0);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+}
+
+.editorTextarea {
   resize: none;
   border-width: 0px 1px 0px 0px;
   border-top-style: initial;
@@ -28,17 +53,10 @@
   border-right-style: solid;
   border-right-color: rgb(238, 238, 238);
   background-color: rgb(248, 248, 250);
-  padding: 20px;
   outline: none;
-  box-sizing: border-box;
   font-size: 15px;
-
+  overflow: auto;
 }
 .write {
   background-color: #fff;
-  word-break: break-all;
-  height: 100%;
-  padding: 20px 20px 40px;
-  overflow: auto;
-  box-sizing: border-box;
 }
