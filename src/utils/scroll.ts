@@ -35,8 +35,8 @@ export const buildScrollMap = (
     }
 
     sourceLikeDiv.textContent = str
-    const h = parseFloat(sourceLikeDiv.style.height)
-    const lh = parseFloat(sourceLikeDiv.style.lineHeight)
+    const h = sourceLikeDiv.offsetHeight
+    const lh = parseFloat('24')
     acc += Math.round(h / lh)
   })
   sourceLikeDiv.remove()
@@ -59,7 +59,7 @@ export const buildScrollMap = (
     if (t !== 0) {
       nonEmptyList.push(t)
     }
-    // _scrollMap[t] = Math.round(el.offsetTop + offset)
+    _scrollMap[t] = Math.round(el.offsetTop + offset)
   })
 
   nonEmptyList.push(linesCount)

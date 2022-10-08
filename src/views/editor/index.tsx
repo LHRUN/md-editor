@@ -9,6 +9,7 @@ import styles from './index.module.less'
 const { Header, Content } = Layout
 
 let scrollEl = SCROLL_SCOPE.NULL
+let scrollTimer: NodeJS.Timeout
 const TEXTAREA_NODE_NAME = 'TEXTAREA'
 
 const Editor: React.FC = () => {
@@ -28,6 +29,15 @@ const Editor: React.FC = () => {
         editorRef.current as HTMLTextAreaElement,
         previewRef.current as HTMLDivElement
       )
+      // const scrollMap = buildScrollMap(
+      //   editorRef.current as HTMLTextAreaElement,
+      //   previewRef.current as HTMLDivElement
+      // )
+
+      // const lineNo = Math.floor(editorRef.current?.scrollTop / 24)
+      // const posTo = scrollMap[lineNo]
+      // console.log(scrollMap, posTo, lineNo)
+      // previewRef.current.scrollTo({ top: posTo })
     } else {
       if (scrollEl === SCROLL_SCOPE.EDITOR) {
         return
@@ -37,6 +47,30 @@ const Editor: React.FC = () => {
         previewRef.current as HTMLDivElement,
         editorRef.current as HTMLTextAreaElement
       )
+
+      // const scrollMap = buildScrollMap(
+      //   editorRef.current as HTMLTextAreaElement,
+      //   previewRef.current as HTMLDivElement
+      // )
+
+      // const lines = Object.keys(scrollMap)
+
+      // if (lines.length < 1) {
+      //   return
+      // }
+
+      // let line = lines[0]
+
+      // for (let i = 1; i < lines.length; i++) {
+      //   if (scrollMap[lines[i]] < previewRef.current?.scrollTop) {
+      //     line = lines[i]
+      //     continue
+      //   }
+
+      //   break
+      // }
+
+      // editorRef.current.scrollTo({ top: 24 * line })
     }
   }
 
@@ -45,6 +79,10 @@ const Editor: React.FC = () => {
     sync.scrollTo({
       top
     })
+    scrollTimer = setTimeout(() => {
+      scrollEl = SCROLL_SCOPE.NULL
+      clearTimeout(scrollTimer)
+    }, 100)
   }
 
   return (

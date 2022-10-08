@@ -56,5 +56,5 @@ const injectLineNumbers: Renderer.RenderRule = (
   return slf.renderToken(tokens, idx, options)
 }
 
-MD.renderer.rules.paragraph_open = MD.renderer.rules.code_block =
+MD.renderer.rules.paragraph_open = MD.renderer.rules.heading_open =
   injectLineNumbers
