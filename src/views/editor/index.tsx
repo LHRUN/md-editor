@@ -3,7 +3,7 @@ import { MD } from '@/utils/md'
 import { SCROLL_SCOPE } from '@/utils/constants'
 import { storage, MD_CONTENT_KEY } from '@/utils/storage'
 
-import { Layout, Col, Row } from 'antd'
+import { Layout } from 'antd'
 import Toolbar from '@/components/toolbar'
 import styles from './index.module.less'
 
@@ -12,6 +12,23 @@ const { Header, Content } = Layout
 let scrollEl = SCROLL_SCOPE.NULL // 当前滚动元素
 let scrollTimer: NodeJS.Timeout
 const TEXTAREA_NODE_NAME = 'TEXTAREA'
+
+interface IToc {
+  level: number
+  val: string
+}
+
+let toc: IToc[] = []
+MD.renderer.rules.heading_open = (tokens, idx, options, _env, slf) => {
+  const { children } = tokens[idx + 1]
+  const { markup } = tokens[idx]
+  const val = children?.reduce((acc, cur) => `${acc}${cur.content}`, '') || ''
+  toc.push({
+    val,
+    level: markup.length
+  })
+  return slf.renderToken(tokens, idx, options)
+}
 
 const Editor: React.FC = () => {
   const [source, setSource] = useState('')
@@ -24,7 +41,15 @@ const Editor: React.FC = () => {
 
   const editorRef = useRef<HTMLTextAreaElement>(null) // 编辑ref
   const previewRef = useRef<HTMLDivElement>(null) // 预览ref
-  const htmlStr = useMemo(() => MD.render(source), [source])
+  const [showToc, setShowToc] = useState(false)
+  const [tocList, setTocList] = useState<IToc[]>([])
+
+  const htmlStr = useMemo(() => {
+    toc = []
+    const str = MD.render(source)
+    setTocList(toc)
+    return str
+  }, [source])
 
   const changeMdContent = (content: string) => {
     storage.set(MD_CONTENT_KEY, content)
@@ -105,31 +130,50 @@ const Editor: React.FC = () => {
           editorRef={editorRef.current}
           source={source}
           setSource={changeMdContent}
+          setShowToc={() => setShowToc((v) => !v)}
         />
       </Header>
       <Content>
-        <Row>
-          <Col style={{ height: '100%' }} span={12}>
-            <textarea
-              className={`${styles.content} ${styles.editorTextarea}`}
-              ref={editorRef}
-              value={source}
-              onInput={(e) => {
-                changeMdContent((e.target as HTMLInputElement).value)
-              }}
-              onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
-            ></textarea>
-          </Col>
-          <Col style={{ height: '100%' }} span={12}>
-            <div
-              id="write"
-              ref={previewRef}
-              className={`${styles.content} ${styles.write}`}
-              dangerouslySetInnerHTML={{ __html: htmlStr }}
-              onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
-            ></div>
-          </Col>
-        </Row>
+        <div className={styles.container}>
+          <textarea
+            className={`${styles.content} ${styles.editorTextarea}`}
+            ref={editorRef}
+            value={source}
+            onInput={(e) => {
+              changeMdContent((e.target as HTMLInputElement).value)
+            }}
+            onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
+          ></textarea>
+          <div
+            id="write"
+            ref={previewRef}
+            className={`${styles.content} ${styles.write}`}
+            dangerouslySetInnerHTML={{ __html: htmlStr }}
+            onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
+          ></div>
+          {showToc && (
+            <div className={styles.toc}>
+              <div className={styles.tocTitle}>目录</div>
+              <div>
+                {tocList.map(({ val, level }, index) => {
+                  const fontSize = ((7 - level) / 10) * 40
+
+                  return (
+                    <div
+                      style={{
+                        marginLeft: `${level * 10}px`,
+                        fontSize: `${fontSize > 12 ? fontSize : 12}px`
+                      }}
+                      key={index}
+                    >
+                      {val}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </Content>
     </Layout>
   )

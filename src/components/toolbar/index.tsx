@@ -29,14 +29,22 @@ import TableIcon from '../icons/table'
 import ImgIcon from '../icons/img'
 
 import styles from './index.module.less'
+import TocIcon from '../icons/toc'
+import GithubIcon from '../icons/github'
 
 interface IProps {
   editorRef: HTMLTextAreaElement | null // 编辑元素
   source: string // markdown内容
   setSource: (v: string) => void // 修改markdown内容
+  setShowToc: () => void // 修改目录展示状态
 }
 
-const Toolbar: React.FC<IProps> = ({ editorRef, source, setSource }) => {
+const Toolbar: React.FC<IProps> = ({
+  editorRef,
+  source,
+  setSource,
+  setShowToc
+}) => {
   const [codeTheme, setCodeTheme] = useState(CODE_THEME.a11yDark)
   const [mdTheme, setMdTheme] = useState(MD_THEME.gitlab)
 
@@ -113,7 +121,7 @@ const Toolbar: React.FC<IProps> = ({ editorRef, source, setSource }) => {
   )
   useEffect(() => {
     if (mdTheme) {
-      switchLink('md-style', `/src/assets/mdTheme/${mdTheme}.css`)
+      // switchLink('md-style', `/src/assets/mdTheme/${mdTheme}.css`)
     }
   }, [mdTheme])
 
@@ -210,6 +218,19 @@ const Toolbar: React.FC<IProps> = ({ editorRef, source, setSource }) => {
         <Dropdown placement="bottom" overlay={MdThemeMenu}>
           <div>MdTheme</div>
         </Dropdown>
+      </div>
+      <div className={styles.right}>
+        <div onClick={() => setShowToc()} className={styles.item}>
+          <TocIcon />
+        </div>
+        <a
+          href="https://github.com/LHRUN/md-editor"
+          target="_blank"
+          className={styles.item}
+          rel="noreferrer"
+        >
+          <GithubIcon />
+        </a>
       </div>
     </div>
   )

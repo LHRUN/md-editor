@@ -19,7 +19,6 @@
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-it-task-lists": "^2.1.1",
-    "markdown-it-toc": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "vite-plugin-imp": "^2.3.0"

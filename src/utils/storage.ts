@@ -24,7 +24,7 @@ export const storage = {
    * @param value
    */
   set(key: string, value: unknown) {
-    if (!key || !value) {
+    if (!key) {
       return null
     }
     localStorage.setItem(key.toString(), JSON.stringify(value))
