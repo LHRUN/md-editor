@@ -1,6 +1,7 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { MD } from '@/utils/md'
 import { SCROLL_SCOPE } from '@/utils/constants'
+import { storage, MD_CONTENT_KEY } from '@/utils/storage'
 
 import { Layout, Col, Row } from 'antd'
 import Toolbar from '@/components/toolbar'
@@ -8,15 +9,27 @@ import styles from './index.module.less'
 
 const { Header, Content } = Layout
 
-let scrollEl = SCROLL_SCOPE.NULL
+let scrollEl = SCROLL_SCOPE.NULL // 当前滚动元素
 let scrollTimer: NodeJS.Timeout
 const TEXTAREA_NODE_NAME = 'TEXTAREA'
 
 const Editor: React.FC = () => {
-  const [mdStr, setMdStr] = useState('')
-  const editorRef = useRef<HTMLTextAreaElement>(null)
-  const previewRef = useRef<HTMLDivElement>(null)
-  const htmlStr = useMemo(() => MD.render(mdStr), [mdStr])
+  const [source, setSource] = useState('')
+  useEffect(() => {
+    const content = storage.get(MD_CONTENT_KEY)
+    if (content) {
+      setSource(content)
+    }
+  }, [])
+
+  const editorRef = useRef<HTMLTextAreaElement>(null) // 编辑ref
+  const previewRef = useRef<HTMLDivElement>(null) // 预览ref
+  const htmlStr = useMemo(() => MD.render(source), [source])
+
+  const changeMdContent = (content: string) => {
+    storage.set(MD_CONTENT_KEY, content)
+    setSource(content)
+  }
 
   const scrollHandle = (el: HTMLInputElement) => {
     const nodeName = el.nodeName
@@ -90,8 +103,8 @@ const Editor: React.FC = () => {
       <Header className={styles.layoutHeader}>
         <Toolbar
           editorRef={editorRef.current}
-          mdStr={mdStr}
-          setMdStr={setMdStr}
+          source={source}
+          setSource={changeMdContent}
         />
       </Header>
       <Content>
@@ -100,9 +113,9 @@ const Editor: React.FC = () => {
             <textarea
               className={`${styles.content} ${styles.editorTextarea}`}
               ref={editorRef}
-              value={mdStr}
+              value={source}
               onInput={(e) => {
-                setMdStr((e.target as HTMLInputElement).value)
+                changeMdContent((e.target as HTMLInputElement).value)
               }}
               onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
             ></textarea>

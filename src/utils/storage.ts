@@ -1,4 +1,5 @@
-export const MD_STORAGE_KEY = 'MARKDOWN_DATA'
+export const MD_CONTENT_KEY = 'MARKDOWN_CONTENT' // markdown内容缓存key
+export const MD_STATE_KEY = 'MARKDOWN_STATE' // markdown状态缓存key
 
 /**
  * localStorage封装

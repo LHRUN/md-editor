@@ -133,6 +133,7 @@ export const MD_THEME = {
   gitlab: 'gitlab'
 }
 
+// 当前滚动范围
 export enum SCROLL_SCOPE {
   NULL,
   EDITOR,

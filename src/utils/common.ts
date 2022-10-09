@@ -1,7 +1,7 @@
 import { message } from 'antd'
 
 /**
- * 切换html link元素
+ * 切换html css link
  * @param key link key 指定唯一标识，用于切换link
  * @param href link href
  */
@@ -16,7 +16,8 @@ export const switchLink = (key: string, href: string) => {
   newLink.setAttribute('class', key)
   newLink.setAttribute('href', href)
   newLink.onerror = (e) => {
-    message.error(`${e}`)
+    console.error(e)
+    message.error('获取css link失败')
   }
   head.appendChild(newLink)
 }

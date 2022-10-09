@@ -12,6 +12,8 @@ import {
   MD_THEME,
   TEXT_STATUS
 } from '@/utils/constants'
+import { switchLink } from '@/utils/common'
+import { MD_STATE_KEY, storage } from '@/utils/storage'
 
 import { Dropdown, Menu } from 'antd'
 import BoldIcon from '../icons/bold'
@@ -25,39 +27,53 @@ import QuoteIcon from '../icons/quote'
 import LinkIcon from '../icons/link'
 import TableIcon from '../icons/table'
 import ImgIcon from '../icons/img'
-// import ProjectPanel from '../projectPanel'
 
 import styles from './index.module.less'
-import { switchLink } from '@/utils/common'
 
 interface IProps {
-  editorRef: HTMLTextAreaElement | null
-  mdStr: string
-  setMdStr: (v: string) => void
+  editorRef: HTMLTextAreaElement | null // 编辑元素
+  source: string // markdown内容
+  setSource: (v: string) => void // 修改markdown内容
 }
 
-const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
+const Toolbar: React.FC<IProps> = ({ editorRef, source, setSource }) => {
   const [codeTheme, setCodeTheme] = useState(CODE_THEME.a11yDark)
   const [mdTheme, setMdTheme] = useState(MD_THEME.gitlab)
+
+  // 初始化缓存获取主题
+  useEffect(() => {
+    const storageData = storage.get(MD_STATE_KEY)
+    if (storageData) {
+      const { codeTheme, mdTheme } = storageData
+      setCodeTheme(codeTheme)
+      setMdTheme(mdTheme)
+    }
+  }, [])
 
   // 点击文字改变
   const clickTextStatus = (type: TEXT_STATUS) => {
     if (editorRef) {
-      changeSelectTextStatus(editorRef, mdStr, setMdStr, type)
+      changeSelectTextStatus(editorRef, source, setSource, type)
     }
   }
 
   // 点击行状态改变
   const clickLineStatus = (type: LINE_STATUS) => {
     if (editorRef) {
-      changeSelectLineStatus(editorRef, mdStr, setMdStr, type)
+      changeSelectLineStatus(editorRef, source, setSource, type)
     }
   }
 
   const CodeThemeMenu = useMemo(
     () => (
       <Menu
-        onClick={({ key }) => setCodeTheme(key)}
+        onClick={({ key }) => {
+          setCodeTheme(key)
+          storage.set(MD_STATE_KEY, {
+            mdTheme,
+            codeTheme: key
+          })
+        }}
         items={Object.values(CODE_THEME).map((val) => ({
           label: val,
           key: val
@@ -67,7 +83,6 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
     ),
     [codeTheme]
   )
-
   useEffect(() => {
     if (codeTheme) {
       switchLink(
@@ -80,7 +95,13 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
   const MdThemeMenu = useMemo(
     () => (
       <Menu
-        onClick={({ key }) => setMdTheme(key)}
+        onClick={({ key }) => {
+          setMdTheme(key)
+          storage.set(MD_STATE_KEY, {
+            codeTheme,
+            mdTheme: key
+          })
+        }}
         items={Object.values(MD_THEME).map((val) => ({
           label: val,
           key: val
@@ -90,7 +111,6 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
     ),
     [mdTheme]
   )
-
   useEffect(() => {
     if (mdTheme) {
       switchLink('md-style', `/src/assets/mdTheme/${mdTheme}.css`)
@@ -151,7 +171,7 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
         className={styles.item}
         onClick={() => {
           if (editorRef) {
-            addLink(editorRef, mdStr, setMdStr)
+            addLink(editorRef, source, setSource)
           }
         }}
       >
@@ -161,7 +181,7 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
         className={styles.item}
         onClick={() => {
           if (editorRef) {
-            addTable(editorRef, mdStr, setMdStr)
+            addTable(editorRef, source, setSource)
           }
         }}
       >
@@ -171,7 +191,7 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
         className={styles.item}
         onClick={() => {
           if (editorRef) {
-            addImage(editorRef, mdStr, setMdStr)
+            addImage(editorRef, source, setSource)
           }
         }}
       >
@@ -181,17 +201,13 @@ const Toolbar: React.FC<IProps> = ({ editorRef, mdStr, setMdStr }) => {
         <Dropdown
           placement="bottom"
           overlay={CodeThemeMenu}
-          overlayStyle={{ maxHeight: '200px', overflow: 'scroll' }}
+          overlayStyle={{ maxHeight: '200px', overflow: 'auto' }}
         >
           <div>CodeTheme</div>
         </Dropdown>
       </div>
       <div className={`${styles.item} ${styles.largeItem}`}>
-        <Dropdown
-          placement="bottom"
-          overlay={MdThemeMenu}
-          overlayStyle={{ maxHeight: '200px', overflow: 'scroll' }}
-        >
+        <Dropdown placement="bottom" overlay={MdThemeMenu}>
           <div>MdTheme</div>
         </Dropdown>
       </div>
