@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { MD } from '@/utils/md'
-import { SCROLL_SCOPE } from '@/utils/constants'
+import { MD, toc } from '@/utils/md'
 import { storage, MD_CONTENT_KEY } from '@/utils/storage'
+import { clearScrollMap, editorScroll, previewScroll } from '@/utils/scroll'
+import { ITitle } from '@/utils/toc'
 
 import { Layout } from 'antd'
 import Toolbar from '@/components/toolbar'
@@ -9,26 +10,7 @@ import styles from './index.module.less'
 
 const { Header, Content } = Layout
 
-let scrollEl = SCROLL_SCOPE.NULL // 当前滚动元素
-let scrollTimer: NodeJS.Timeout
 const TEXTAREA_NODE_NAME = 'TEXTAREA'
-
-interface IToc {
-  level: number
-  val: string
-}
-
-let toc: IToc[] = []
-MD.renderer.rules.heading_open = (tokens, idx, options, _env, slf) => {
-  const { children } = tokens[idx + 1]
-  const { markup } = tokens[idx]
-  const val = children?.reduce((acc, cur) => `${acc}${cur.content}`, '') || ''
-  toc.push({
-    val,
-    level: markup.length
-  })
-  return slf.renderToken(tokens, idx, options)
-}
 
 const Editor: React.FC = () => {
   const [source, setSource] = useState('')
@@ -41,86 +23,42 @@ const Editor: React.FC = () => {
 
   const editorRef = useRef<HTMLTextAreaElement>(null) // 编辑ref
   const previewRef = useRef<HTMLDivElement>(null) // 预览ref
-  const [showToc, setShowToc] = useState(false)
-  const [tocList, setTocList] = useState<IToc[]>([])
+  const [showToc, setShowToc] = useState(false) // 目录展示状态
+  const [tocList, setTocList] = useState<ITitle[]>([]) // 目录
 
+  /**
+   * 获取转换后的html字符串，并获取目录
+   */
   const htmlStr = useMemo(() => {
-    toc = []
+    toc.clear()
     const str = MD.render(source)
-    setTocList(toc)
+    setTocList(toc.get())
     return str
   }, [source])
 
+  /**
+   * 修改markdown内容
+   * @param content
+   */
   const changeMdContent = (content: string) => {
     storage.set(MD_CONTENT_KEY, content)
     setSource(content)
+    clearScrollMap()
   }
 
+  /**
+   * 滚动监听
+   * @param el
+   */
   const scrollHandle = (el: HTMLInputElement) => {
     const nodeName = el.nodeName
-    if (nodeName === TEXTAREA_NODE_NAME) {
-      if (scrollEl === SCROLL_SCOPE.PREVIEW) {
-        return
+    if (editorRef.current && previewRef.current) {
+      if (nodeName === TEXTAREA_NODE_NAME) {
+        editorScroll(editorRef.current, previewRef.current)
+      } else {
+        previewScroll(editorRef.current, previewRef.current)
       }
-      scrollEl = SCROLL_SCOPE.EDITOR
-      syncScroll(
-        editorRef.current as HTMLTextAreaElement,
-        previewRef.current as HTMLDivElement
-      )
-      // const scrollMap = buildScrollMap(
-      //   editorRef.current as HTMLTextAreaElement,
-      //   previewRef.current as HTMLDivElement
-      // )
-
-      // const lineNo = Math.floor(editorRef.current?.scrollTop / 24)
-      // const posTo = scrollMap[lineNo]
-      // console.log(scrollMap, posTo, lineNo)
-      // previewRef.current.scrollTo({ top: posTo })
-    } else {
-      if (scrollEl === SCROLL_SCOPE.EDITOR) {
-        return
-      }
-      scrollEl = SCROLL_SCOPE.PREVIEW
-      syncScroll(
-        previewRef.current as HTMLDivElement,
-        editorRef.current as HTMLTextAreaElement
-      )
-
-      // const scrollMap = buildScrollMap(
-      //   editorRef.current as HTMLTextAreaElement,
-      //   previewRef.current as HTMLDivElement
-      // )
-
-      // const lines = Object.keys(scrollMap)
-
-      // if (lines.length < 1) {
-      //   return
-      // }
-
-      // let line = lines[0]
-
-      // for (let i = 1; i < lines.length; i++) {
-      //   if (scrollMap[lines[i]] < previewRef.current?.scrollTop) {
-      //     line = lines[i]
-      //     continue
-      //   }
-
-      //   break
-      // }
-
-      // editorRef.current.scrollTo({ top: 24 * line })
     }
-  }
-
-  const syncScroll = (active: HTMLElement, sync: HTMLElement) => {
-    const top = (active.scrollTop / active.scrollHeight) * sync.scrollHeight
-    sync.scrollTo({
-      top
-    })
-    scrollTimer = setTimeout(() => {
-      scrollEl = SCROLL_SCOPE.NULL
-      clearTimeout(scrollTimer)
-    }, 100)
   }
 
   return (

@@ -1,4 +1,12 @@
-export const buildScrollMap = (
+import { SCROLL_SCOPE } from './constants'
+
+/**
+ *
+ * @param editor 编辑元素
+ * @param review 预览元素
+ * @returns number[]
+ */
+const buildScrollMap = (
   editor: HTMLTextAreaElement,
   review: HTMLDivElement
 ) => {
@@ -20,7 +28,7 @@ export const buildScrollMap = (
   sourceLikeDiv.style.width = `${editor.clientWidth}px`
   sourceLikeDiv.style.fontSize = editor.style.fontSize
   sourceLikeDiv.style.fontFamily = editor.style.fontFamily
-  sourceLikeDiv.style.lineHeight = editor.style.lineHeight
+  sourceLikeDiv.style.lineHeight = '24px'
   sourceLikeDiv.style.whiteSpace = editor.style.whiteSpace
   document.body.appendChild(sourceLikeDiv)
 
@@ -59,7 +67,7 @@ export const buildScrollMap = (
     if (t !== 0) {
       nonEmptyList.push(t)
     }
-    _scrollMap[t] = Math.round(el.offsetTop + offset)
+    _scrollMap[t] = Math.round((el as HTMLElement).offsetTop + offset)
   })
 
   nonEmptyList.push(linesCount)
@@ -80,4 +88,70 @@ export const buildScrollMap = (
   }
 
   return _scrollMap
+}
+
+let scrollMap: number[] | null
+let curScroll = SCROLL_SCOPE.NULL // 当前滚动元素
+
+/**
+ * 编辑器滚动
+ * @param editor
+ * @param preview
+ */
+export const editorScroll = (
+  editor: HTMLTextAreaElement,
+  preview: HTMLDivElement
+) => {
+  if (curScroll === SCROLL_SCOPE.PREVIEW) {
+    curScroll = SCROLL_SCOPE.EDITOR
+    return
+  }
+  curScroll = SCROLL_SCOPE.EDITOR
+  if (!scrollMap) {
+    scrollMap = buildScrollMap(editor, preview)
+  }
+  const lineNo = Math.floor(editor.scrollTop / 24)
+  const posTo = scrollMap[lineNo]
+  preview.scrollTo({ top: posTo })
+}
+
+/**
+ * 预览区域滚动
+ * @param editor
+ * @param preview
+ */
+export const previewScroll = (
+  editor: HTMLTextAreaElement,
+  preview: HTMLDivElement
+) => {
+  if (curScroll === SCROLL_SCOPE.EDITOR) {
+    curScroll = SCROLL_SCOPE.PREVIEW
+    return
+  }
+  curScroll = SCROLL_SCOPE.PREVIEW
+
+  if (!scrollMap) {
+    scrollMap = buildScrollMap(editor, preview)
+  }
+
+  const lines = Object.keys(scrollMap)
+  if (lines.length < 1) {
+    return
+  }
+  let line = lines[0]
+  for (let i = 1; i < lines.length; i++) {
+    if (scrollMap[Number(lines[i])] < preview.scrollTop) {
+      line = lines[i]
+      continue
+    }
+    break
+  }
+  editor.scrollTo({ top: 24 * Number(line) })
+}
+
+/**
+ * 清空滚动映射
+ */
+export const clearScrollMap = () => {
+  scrollMap = null
 }

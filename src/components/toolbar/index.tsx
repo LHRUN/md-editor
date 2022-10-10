@@ -6,12 +6,7 @@ import {
   changeSelectLineStatus,
   changeSelectTextStatus
 } from '@/utils/editor'
-import {
-  CODE_THEME,
-  LINE_STATUS,
-  MD_THEME,
-  TEXT_STATUS
-} from '@/utils/constants'
+import { CODE_THEME, LINE_STATUS, TEXT_STATUS } from '@/utils/constants'
 import { switchLink } from '@/utils/common'
 import { MD_STATE_KEY, storage } from '@/utils/storage'
 
@@ -27,10 +22,11 @@ import QuoteIcon from '../icons/quote'
 import LinkIcon from '../icons/link'
 import TableIcon from '../icons/table'
 import ImgIcon from '../icons/img'
-
-import styles from './index.module.less'
 import TocIcon from '../icons/toc'
 import GithubIcon from '../icons/github'
+import ThemeIcon from '../icons/theme'
+
+import styles from './index.module.less'
 
 interface IProps {
   editorRef: HTMLTextAreaElement | null // 编辑元素
@@ -46,15 +42,13 @@ const Toolbar: React.FC<IProps> = ({
   setShowToc
 }) => {
   const [codeTheme, setCodeTheme] = useState(CODE_THEME.a11yDark)
-  const [mdTheme, setMdTheme] = useState(MD_THEME.gitlab)
 
   // 初始化缓存获取主题
   useEffect(() => {
     const storageData = storage.get(MD_STATE_KEY)
     if (storageData) {
-      const { codeTheme, mdTheme } = storageData
+      const { codeTheme } = storageData
       setCodeTheme(codeTheme)
-      setMdTheme(mdTheme)
     }
   }, [])
 
@@ -78,7 +72,6 @@ const Toolbar: React.FC<IProps> = ({
         onClick={({ key }) => {
           setCodeTheme(key)
           storage.set(MD_STATE_KEY, {
-            mdTheme,
             codeTheme: key
           })
         }}
@@ -99,31 +92,6 @@ const Toolbar: React.FC<IProps> = ({
       )
     }
   }, [codeTheme])
-
-  const MdThemeMenu = useMemo(
-    () => (
-      <Menu
-        onClick={({ key }) => {
-          setMdTheme(key)
-          storage.set(MD_STATE_KEY, {
-            codeTheme,
-            mdTheme: key
-          })
-        }}
-        items={Object.values(MD_THEME).map((val) => ({
-          label: val,
-          key: val
-        }))}
-        selectedKeys={[mdTheme]}
-      />
-    ),
-    [mdTheme]
-  )
-  useEffect(() => {
-    if (mdTheme) {
-      // switchLink('md-style', `/src/assets/mdTheme/${mdTheme}.css`)
-    }
-  }, [mdTheme])
 
   return (
     <div className={styles.toolBar}>
@@ -205,18 +173,15 @@ const Toolbar: React.FC<IProps> = ({
       >
         <ImgIcon />
       </div>
-      <div className={`${styles.item} ${styles.largeItem}`}>
+      <div className={styles.item}>
         <Dropdown
           placement="bottom"
           overlay={CodeThemeMenu}
           overlayStyle={{ maxHeight: '200px', overflow: 'auto' }}
         >
-          <div>CodeTheme</div>
-        </Dropdown>
-      </div>
-      <div className={`${styles.item} ${styles.largeItem}`}>
-        <Dropdown placement="bottom" overlay={MdThemeMenu}>
-          <div>MdTheme</div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ThemeIcon />
+          </div>
         </Dropdown>
       </div>
       <div className={styles.right}>

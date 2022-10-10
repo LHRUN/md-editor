@@ -128,11 +128,6 @@ export const CODE_THEME = {
   xt256: 'st256'
 }
 
-// markdown主题
-export const MD_THEME = {
-  gitlab: 'gitlab'
-}
-
 // 当前滚动范围
 export enum SCROLL_SCOPE {
   NULL,
