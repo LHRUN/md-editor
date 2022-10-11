@@ -13,7 +13,6 @@ export class Toc {
 
   // 添加标题
   push(item: ITitle) {
-    console.log(item)
     this.list.push(item)
   }
 

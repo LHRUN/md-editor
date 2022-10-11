@@ -9,8 +9,9 @@ import {
 import { CODE_THEME, LINE_STATUS, TEXT_STATUS } from '@/utils/constants'
 import { switchLink } from '@/utils/common'
 import { MD_STATE_KEY, storage } from '@/utils/storage'
+import { changeSyncScroll } from '@/utils/scroll'
 
-import { Dropdown, Menu } from 'antd'
+import { Checkbox, Dropdown, Menu } from 'antd'
 import BoldIcon from '../icons/bold'
 import DeleteIcon from '../icons/delete'
 import ItalicIcon from '../icons/italic'
@@ -185,6 +186,12 @@ const Toolbar: React.FC<IProps> = ({
         </Dropdown>
       </div>
       <div className={styles.right}>
+        <Checkbox
+          defaultChecked={true}
+          onChange={(e) => changeSyncScroll(e.target.checked)}
+        >
+          同步滚动
+        </Checkbox>
         <div onClick={() => setShowToc()} className={styles.item}>
           <TocIcon />
         </div>

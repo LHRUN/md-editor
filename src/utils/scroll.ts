@@ -1,5 +1,7 @@
 import { SCROLL_SCOPE } from './constants'
 
+const LINE_HEIGHT = 24 // 编辑器行高
+
 /**
  *
  * @param editor 编辑元素
@@ -10,8 +12,6 @@ const buildScrollMap = (
   editor: HTMLTextAreaElement,
   review: HTMLDivElement
 ) => {
-  let i
-  let offset = 0
   const nonEmptyList = []
   let pos = 0
   let a = 0
@@ -26,15 +26,10 @@ const buildScrollMap = (
   sourceLikeDiv.style.visibility = 'hidden'
   sourceLikeDiv.style.height = 'auto'
   sourceLikeDiv.style.width = `${editor.clientWidth}px`
-  sourceLikeDiv.style.fontSize = editor.style.fontSize
-  sourceLikeDiv.style.fontFamily = editor.style.fontFamily
-  sourceLikeDiv.style.lineHeight = '24px'
-  sourceLikeDiv.style.whiteSpace = editor.style.whiteSpace
+  sourceLikeDiv.style.fontSize = '15px'
+  sourceLikeDiv.style.lineHeight = `${LINE_HEIGHT}px`
   document.body.appendChild(sourceLikeDiv)
 
-  offset = review.scrollTop - review.offsetTop
-
-  acc = 0
   editor.value.split('\n').forEach((str) => {
     lineHeightMap.push(acc)
     if (str.length === 0) {
@@ -44,14 +39,13 @@ const buildScrollMap = (
 
     sourceLikeDiv.textContent = str
     const h = sourceLikeDiv.offsetHeight
-    const lh = parseFloat('24')
-    acc += Math.round(h / lh)
+    acc += Math.round(h / LINE_HEIGHT)
   })
   sourceLikeDiv.remove()
   lineHeightMap.push(acc)
   linesCount = acc
 
-  for (i = 0; i < linesCount; i++) {
+  for (let i = 0; i < linesCount; i++) {
     _scrollMap.push(-1)
   }
 
@@ -67,14 +61,12 @@ const buildScrollMap = (
     if (t !== 0) {
       nonEmptyList.push(t)
     }
-    _scrollMap[t] = Math.round((el as HTMLElement).offsetTop + offset)
+    _scrollMap[t] = Math.round((el as HTMLElement).offsetTop - review.offsetTop)
   })
 
   nonEmptyList.push(linesCount)
   _scrollMap[linesCount] = review.scrollHeight
-
-  pos = 0
-  for (i = 1; i < linesCount; i++) {
+  for (let i = 1; i < linesCount; i++) {
     if (_scrollMap[i] !== -1) {
       pos++
       continue
@@ -92,6 +84,7 @@ const buildScrollMap = (
 
 let scrollMap: number[] | null
 let curScroll = SCROLL_SCOPE.NULL // 当前滚动元素
+let syncScroll = true // 同步滚动状态
 
 /**
  * 编辑器滚动
@@ -102,6 +95,9 @@ export const editorScroll = (
   editor: HTMLTextAreaElement,
   preview: HTMLDivElement
 ) => {
+  if (!syncScroll) {
+    return
+  }
   if (curScroll === SCROLL_SCOPE.PREVIEW) {
     curScroll = SCROLL_SCOPE.EDITOR
     return
@@ -110,7 +106,8 @@ export const editorScroll = (
   if (!scrollMap) {
     scrollMap = buildScrollMap(editor, preview)
   }
-  const lineNo = Math.floor(editor.scrollTop / 24)
+
+  const lineNo = Math.floor(editor.scrollTop / LINE_HEIGHT)
   const posTo = scrollMap[lineNo]
   preview.scrollTo({ top: posTo })
 }
@@ -124,6 +121,9 @@ export const previewScroll = (
   editor: HTMLTextAreaElement,
   preview: HTMLDivElement
 ) => {
+  if (!syncScroll) {
+    return
+  }
   if (curScroll === SCROLL_SCOPE.EDITOR) {
     curScroll = SCROLL_SCOPE.PREVIEW
     return
@@ -146,7 +146,7 @@ export const previewScroll = (
     }
     break
   }
-  editor.scrollTo({ top: 24 * Number(line) })
+  editor.scrollTo({ top: LINE_HEIGHT * Number(line) })
 }
 
 /**
@@ -154,4 +154,11 @@ export const previewScroll = (
  */
 export const clearScrollMap = () => {
   scrollMap = null
+}
+
+/**
+ * 改变同步滚动状态
+ */
+export const changeSyncScroll = (state: boolean) => {
+  syncScroll = state
 }

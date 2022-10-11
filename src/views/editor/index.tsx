@@ -3,6 +3,7 @@ import { MD, toc } from '@/utils/md'
 import { storage, MD_CONTENT_KEY } from '@/utils/storage'
 import { clearScrollMap, editorScroll, previewScroll } from '@/utils/scroll'
 import { ITitle } from '@/utils/toc'
+import { useResizeEvent } from '@/hooks/event'
 
 import { Layout } from 'antd'
 import Toolbar from '@/components/toolbar'
@@ -25,6 +26,8 @@ const Editor: React.FC = () => {
   const previewRef = useRef<HTMLDivElement>(null) // 预览ref
   const [showToc, setShowToc] = useState(false) // 目录展示状态
   const [tocList, setTocList] = useState<ITitle[]>([]) // 目录
+
+  useResizeEvent(clearScrollMap)
 
   /**
    * 获取转换后的html字符串，并获取目录
