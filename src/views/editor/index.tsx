@@ -68,7 +68,7 @@ const Editor: React.FC = () => {
     <Layout className={styles.layout}>
       <Header className={styles.layoutHeader}>
         <Toolbar
-          editorRef={editorRef.current}
+          editor={editorRef.current}
           source={source}
           setSource={changeMdContent}
           setShowToc={() => setShowToc((v) => !v)}

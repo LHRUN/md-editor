@@ -30,14 +30,14 @@ import ThemeIcon from '../icons/theme'
 import styles from './index.module.less'
 
 interface IProps {
-  editorRef: HTMLTextAreaElement | null // 编辑元素
+  editor: HTMLTextAreaElement | null // 编辑元素
   source: string // markdown内容
   setSource: (v: string) => void // 修改markdown内容
   setShowToc: () => void // 修改目录展示状态
 }
 
 const Toolbar: React.FC<IProps> = ({
-  editorRef,
+  editor,
   source,
   setSource,
   setShowToc
@@ -55,15 +55,15 @@ const Toolbar: React.FC<IProps> = ({
 
   // 点击文字改变
   const clickTextStatus = (type: TEXT_STATUS) => {
-    if (editorRef) {
-      changeSelectTextStatus(editorRef, source, setSource, type)
+    if (editor) {
+      changeSelectTextStatus(editor, source, setSource, type)
     }
   }
 
   // 点击行状态改变
   const clickLineStatus = (type: LINE_STATUS) => {
-    if (editorRef) {
-      changeSelectLineStatus(editorRef, source, setSource, type)
+    if (editor) {
+      changeSelectLineStatus(editor, source, setSource, type)
     }
   }
 
@@ -147,8 +147,8 @@ const Toolbar: React.FC<IProps> = ({
       <div
         className={styles.item}
         onClick={() => {
-          if (editorRef) {
-            addLink(editorRef, source, setSource)
+          if (editor) {
+            addLink(editor, source, setSource)
           }
         }}
       >
@@ -157,8 +157,8 @@ const Toolbar: React.FC<IProps> = ({
       <div
         className={styles.item}
         onClick={() => {
-          if (editorRef) {
-            addTable(editorRef, source, setSource)
+          if (editor) {
+            addTable(editor, source, setSource)
           }
         }}
       >
@@ -167,8 +167,8 @@ const Toolbar: React.FC<IProps> = ({
       <div
         className={styles.item}
         onClick={() => {
-          if (editorRef) {
-            addImage(editorRef, source, setSource)
+          if (editor) {
+            addImage(editor, source, setSource)
           }
         }}
       >
