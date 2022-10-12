@@ -128,7 +128,7 @@ export const CODE_THEME = {
   xt256: 'st256'
 }
 
-// 当前滚动范围
+// 滚动操作枚举
 export enum SCROLL_SCOPE {
   NULL,
   EDITOR,

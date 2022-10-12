@@ -3,7 +3,7 @@ import { SCROLL_SCOPE } from './constants'
 const LINE_HEIGHT = 24 // 编辑器行高
 
 /**
- *
+ * 获取编辑区域每行对应的预览偏移距离
  * @param editor 编辑元素
  * @param review 预览元素
  * @returns number[]
@@ -12,46 +12,43 @@ const buildScrollMap = (
   editor: HTMLTextAreaElement,
   review: HTMLDivElement
 ) => {
-  const nonEmptyList = []
-  let pos = 0
-  let a = 0
-  let b = 0
   const lineHeightMap: number[] = []
-  let linesCount = 0
+  let linesCount = 0 // 编辑区总行数
+
+  /**
+   * 临时创建元素获取每次换行之间的总行数
+   */
+  const sourceLine = document.createElement('div')
+  sourceLine.style.position = 'absolute'
+  sourceLine.style.visibility = 'hidden'
+  sourceLine.style.height = 'auto'
+  sourceLine.style.width = `${editor.clientWidth}px`
+  sourceLine.style.fontSize = '15px'
+  sourceLine.style.lineHeight = `${LINE_HEIGHT}px`
+  document.body.appendChild(sourceLine)
   let acc = 0
-  const _scrollMap = []
-
-  const sourceLikeDiv = document.createElement('div')
-  sourceLikeDiv.style.position = 'absolute'
-  sourceLikeDiv.style.visibility = 'hidden'
-  sourceLikeDiv.style.height = 'auto'
-  sourceLikeDiv.style.width = `${editor.clientWidth}px`
-  sourceLikeDiv.style.fontSize = '15px'
-  sourceLikeDiv.style.lineHeight = `${LINE_HEIGHT}px`
-  document.body.appendChild(sourceLikeDiv)
-
   editor.value.split('\n').forEach((str) => {
     lineHeightMap.push(acc)
     if (str.length === 0) {
       acc++
       return
     }
-
-    sourceLikeDiv.textContent = str
-    const h = sourceLikeDiv.offsetHeight
+    sourceLine.textContent = str
+    const h = sourceLine.offsetHeight
     acc += Math.round(h / LINE_HEIGHT)
   })
-  sourceLikeDiv.remove()
+  sourceLine.remove()
   lineHeightMap.push(acc)
   linesCount = acc
 
-  for (let i = 0; i < linesCount; i++) {
-    _scrollMap.push(-1)
-  }
+  const _scrollMap: number[] = new Array(linesCount).fill(-1) // 最终输出的偏移map
 
+  /**
+   * 获取标记行号的offset距离
+   */
+  const nonEmptyList = []
   nonEmptyList.push(0)
   _scrollMap[0] = 0
-
   document.querySelectorAll('.line').forEach((el) => {
     let t: string | number = el.getAttribute('data-line') as string
     if (t === '') {
@@ -66,14 +63,18 @@ const buildScrollMap = (
 
   nonEmptyList.push(linesCount)
   _scrollMap[linesCount] = review.scrollHeight
+
+  /**
+   * 未标记行号的元素等比处理
+   */
+  let pos = 0
   for (let i = 1; i < linesCount; i++) {
     if (_scrollMap[i] !== -1) {
       pos++
       continue
     }
-
-    a = nonEmptyList[pos]
-    b = nonEmptyList[pos + 1]
+    const a = nonEmptyList[pos]
+    const b = nonEmptyList[pos + 1]
     _scrollMap[i] = Math.round(
       (_scrollMap[b] * (i - a) + _scrollMap[a] * (b - i)) / (b - a)
     )
