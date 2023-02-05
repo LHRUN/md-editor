@@ -26,6 +26,7 @@ import ImgIcon from '../icons/img'
 import TocIcon from '../icons/toc'
 import GithubIcon from '../icons/github'
 import ThemeIcon from '../icons/theme'
+import MultiFile from '../multiFile'
 
 import styles from './index.module.less'
 
@@ -190,11 +191,12 @@ const Toolbar: React.FC<IProps> = ({
           defaultChecked={true}
           onChange={(e) => changeSyncScroll(e.target.checked)}
         >
-          同步滚动
+          sync scroll
         </Checkbox>
         <div onClick={() => setShowToc()} className={styles.item}>
           <TocIcon />
         </div>
+        <MultiFile />
         <a
           href="https://github.com/LHRUN/md-editor"
           target="_blank"

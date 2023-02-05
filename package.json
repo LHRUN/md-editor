@@ -1,7 +1,7 @@
 {
   "name": "md-editor",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
   "dependencies": {
     "antd": "^4.23.4",
     "highlight.js": "^11.6.0",
+    "immer": "^9.0.19",
     "markdown-it": "^13.0.1",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-deflist": "^2.1.0",

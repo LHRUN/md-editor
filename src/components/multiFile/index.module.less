@@ -1,0 +1,38 @@
+.mutilFileIcon {
+  margin-right: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 27px;
+  height: 27px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(0,0,0,0.1);
+  }
+}
+.drawerExtra {
+  width: 40px;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+
+  .mutilFileIcon {
+    margin-right: 0px;
+    display: inline-flex;
+  }
+}
+.titleLine {
+  padding: 2px 3px;
+  cursor: pointer;
+
+  &:not(:last-child) {
+    border-bottom: solid 1px #d9d9d9;
+  }
+  &:hover {
+    background-color: rgba(0,0,0,0.1);
+  }
+}

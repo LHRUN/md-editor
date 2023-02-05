@@ -1,12 +1,26 @@
-export const MD_CONTENT_KEY = 'MARKDOWN_CONTENT' // markdown内容缓存key
-export const MD_STATE_KEY = 'MARKDOWN_STATE' // markdown状态缓存key
+import { CODE_THEME } from './constants'
+import { FileData, defaultMultiFileData } from './multiFile'
+
+export const MD_CONTENT_KEY = 'MARKDOWN_CONTENT' // Used in v0.1.0, deprecated, markdown content key
+export const MD_STATE_KEY = 'MARKDOWN_STATE' // Used in v0.1.0, deprecated, markdown state key
+export const MD_FILE_KEY = 'MARKDOWN_FILE' // Used in v0.2.0, multi file key
+
+export interface MARKDOWN_STATE {
+  codeTheme: string
+}
+
+export interface STORAGE {
+  fileData: FileData[]
+  version: string
+  currentKey: string
+}
 
 /**
- * localStorage封装
+ * localStorage
  */
 export const storage = {
   /**
-   * 获取缓存
+   * get storage
    * @param key localStorage key
    */
   get(key: string) {
@@ -19,7 +33,7 @@ export const storage = {
   },
 
   /**
-   * 修改缓存
+   * set storage
    * @param key localStorage key
    * @param value
    */
@@ -31,7 +45,7 @@ export const storage = {
   },
 
   /**
-   * 删除缓存
+   * delete storage
    * @param key localStorage key
    */
   deleteKey(key: string) {
@@ -43,9 +57,75 @@ export const storage = {
   },
 
   /**
-   * 清除缓存
+   * clear storage
    */
   clear() {
     localStorage.clear()
+  }
+}
+
+/**
+ * Historical data compatible
+ * @returns { currentData, storageData }
+ */
+export const getFileStorageData = (): {
+  currentData: FileData
+  storageData: STORAGE
+} => {
+  // v0.1.0 Data Structure
+  const content = storage.get(MD_CONTENT_KEY)
+  const state = storage.get(MD_STATE_KEY)
+  if (content || state) {
+    const fileData = [
+      {
+        title: 'Learning',
+        key: '0-0',
+        parent: '0',
+        source: content || '',
+        isLeaf: true,
+        state: state || {
+          codeTheme: CODE_THEME.a11yDark
+        }
+      }
+    ]
+    storage.deleteKey(MD_CONTENT_KEY)
+    storage.deleteKey(MD_STATE_KEY)
+    const storageData = {
+      fileData,
+      version: '0.2.0',
+      currentKey: fileData[0].key
+    }
+    storage.set(MD_FILE_KEY, storageData)
+    return {
+      currentData: fileData[0],
+      storageData
+    }
+  }
+
+  // v0.2.0 Data Structure
+  const fileStorage = storage.get(MD_FILE_KEY)
+  if (fileStorage) {
+    const { currentKey, fileData } = fileStorage
+    const currentData = fileData.find(
+      (data: FileData) => data.key === currentKey
+    )
+    return {
+      currentData,
+      storageData: fileData
+    }
+  }
+
+  // new User
+  const storageData = {
+    fileData: defaultMultiFileData,
+    version: '0.2.0',
+    currentKey: '0-2'
+  }
+  const currentData = storageData.fileData.find(
+    (data: FileData) => data.key === storageData.currentKey
+  ) as FileData
+  return {
+    currentData,
+    storageData
   }
 }
