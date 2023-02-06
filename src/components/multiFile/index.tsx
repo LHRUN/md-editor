@@ -1,85 +1,66 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Checkbox, Drawer, Popconfirm, Popover, Tree } from 'antd'
 import FileTitleModal from '../fileTitleModal'
 import MultiFileIcon from '../icons/multiFile'
-import { defaultMultiFileData, arrToTree, FileData } from '@/utils/multiFile'
+import { arrToTree, FileData } from '@/utils/multiFile'
 import styles from './index.module.less'
-import { CODE_THEME } from '@/utils/constants'
 import MoreIcon from '../icons/more'
 import DeleteFileIcon from '../icons/deleteFile'
 import EditFileIcon from '../icons/editFile'
+import { useFile } from '@/context/file'
+import { ACTION_TYPE } from '@/context/file/reducer'
 
 const MultiFile: React.FC = () => {
+  const { file, dispatch } = useFile()
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [editor, setEditor] = useState(false)
+  const [isEditor, setIsEditor] = useState(false)
   const [isTitleModalOpen, setIsTitleModalOpen] = useState(false)
-  const [multiFileData, setMultiFileData] = useState<FileData[]>([])
-  const [selectedKey, setSelectedKey] = useState('0-2')
   const [editTitleData, setEditTitleData] = useState<FileData>({} as FileData)
-
-  const treeData = useMemo(() => arrToTree(multiFileData), [multiFileData])
-  const fileCount = useMemo(
-    () => multiFileData.reduce((acc, data) => acc + (data.isLeaf ? 1 : 0), 0),
-    [multiFileData]
+  console.log(file.multiFileData)
+  const treeData = useMemo(
+    () => arrToTree(file.multiFileData),
+    [file.multiFileData]
   )
-
-  useEffect(() => {
-    if (multiFileData.length === 0) {
-      setMultiFileData(defaultMultiFileData)
-    }
-  }, [])
+  const fileCount = useMemo(
+    () =>
+      file.multiFileData.reduce((acc, data) => acc + (data.isLeaf ? 1 : 0), 0),
+    [file.multiFileData]
+  )
 
   const onSelect = (_selectedKeys: React.Key[], info: { node: FileData }) => {
     if (info.node.isLeaf) {
-      setSelectedKey(info.node.key)
+      dispatch({
+        type: ACTION_TYPE.CHANGE_CUR_KEY,
+        payload: info.node.key
+      })
     }
   }
 
   const deleteFile = (key: string) => {
-    setMultiFileData((data) =>
-      data.filter((file) => file.key !== key && file.parent !== key)
-    )
+    dispatch({
+      type: ACTION_TYPE.DELTE_FILE,
+      payload: key
+    })
   }
 
   const addFile = (parent: string, isLeaf: boolean) => {
-    const curLevelData = multiFileData.filter((data) => data.parent === parent)
-    let key = ''
-    if (curLevelData.length > 0) {
-      curLevelData.sort((a, b) => {
-        const aKeys = a.key.split('-')
-        const bKeys = b.key.split('-')
-        return Number(bKeys[bKeys.length - 1]) - Number(aKeys[aKeys.length - 1])
-      })
-      const curLevelLastKey = curLevelData[0].key.split('-')
-      key = `${parent}-${
-        Number(curLevelLastKey[curLevelLastKey.length - 1]) + 1
-      }`
-    } else {
-      key = `${parent}-0`
-    }
-
-    setMultiFileData([
-      ...multiFileData,
-      {
-        title: 'empty',
-        key,
-        parent,
-        source: '',
+    dispatch({
+      type: ACTION_TYPE.ADD_FILE,
+      payload: {
         isLeaf,
-        state: {
-          codeTheme: CODE_THEME.a11yDark
-        }
+        parent
       }
-    ])
+    })
   }
 
   const changeFileName = (title: string) => {
-    const index = multiFileData.findIndex(
-      (data) => data.key === editTitleData.key
-    )
-    const test = [...multiFileData]
-    test[index].title = title
-    setMultiFileData(test)
+    dispatch({
+      type: ACTION_TYPE.DELTE_FILE,
+      payload: {
+        key: editTitleData.key,
+        title
+      }
+    })
     setIsTitleModalOpen(false)
   }
 
@@ -101,7 +82,7 @@ const MultiFile: React.FC = () => {
         >
           <EditFileIcon />
         </span>
-        {fileCount > 1 && fileData.key !== selectedKey && (
+        {fileCount > 1 && fileData.key !== file.curKey && (
           <Popconfirm
             title="Are you sure to delete this file?"
             onConfirm={() => deleteFile(fileData.key)}
@@ -168,7 +149,7 @@ const MultiFile: React.FC = () => {
         extra={
           <Checkbox
             defaultChecked={false}
-            onChange={(e) => setEditor(e.target.checked)}
+            onChange={(e) => setIsEditor(e.target.checked)}
           >
             <div className={styles.drawerExtra}>Editor</div>
           </Checkbox>
@@ -178,12 +159,12 @@ const MultiFile: React.FC = () => {
       >
         <Tree
           titleRender={(node) => {
-            if (!editor) {
+            if (!isEditor) {
               return node.title
             }
             return titleRender(node)
           }}
-          selectedKeys={[selectedKey]}
+          selectedKeys={[file.curKey]}
           showLine
           onSelect={onSelect}
           treeData={treeData}

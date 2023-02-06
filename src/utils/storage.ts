@@ -70,6 +70,7 @@ export const storage = {
  */
 export const getFileStorageData = (): {
   currentData: FileData
+  currentKey: string
   storageData: STORAGE
 } => {
   // v0.1.0 Data Structure
@@ -81,7 +82,7 @@ export const getFileStorageData = (): {
         title: 'Learning',
         key: '0-0',
         parent: '0',
-        source: content || '',
+        content: content || '',
         isLeaf: true,
         state: state || {
           codeTheme: CODE_THEME.a11yDark
@@ -92,11 +93,12 @@ export const getFileStorageData = (): {
     storage.deleteKey(MD_STATE_KEY)
     const storageData = {
       fileData,
-      version: '0.2.0',
+      version: import.meta.env.VERSION,
       currentKey: fileData[0].key
     }
     storage.set(MD_FILE_KEY, storageData)
     return {
+      currentKey: storageData.currentKey,
       currentData: fileData[0],
       storageData
     }
@@ -110,22 +112,35 @@ export const getFileStorageData = (): {
       (data: FileData) => data.key === currentKey
     )
     return {
+      currentKey,
       currentData,
-      storageData: fileData
+      storageData: fileStorage
     }
   }
 
   // new User
   const storageData = {
     fileData: defaultMultiFileData,
-    version: '0.2.0',
+    version: import.meta.env.VERSION,
     currentKey: '0-2'
   }
   const currentData = storageData.fileData.find(
     (data: FileData) => data.key === storageData.currentKey
   ) as FileData
   return {
+    currentKey: storageData.currentKey,
     currentData,
     storageData
   }
+}
+
+export const setFileStorageData = (
+  fileData: FileData[],
+  currentKey: string
+) => {
+  storage.set(MD_FILE_KEY, {
+    fileData,
+    currentKey,
+    version: import.meta.env.VERSION
+  })
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import {
   addImage,
   addLink,
@@ -8,7 +8,6 @@ import {
 } from '@/utils/editor'
 import { CODE_THEME, LINE_STATUS, TEXT_STATUS } from '@/utils/constants'
 import { switchLink } from '@/utils/common'
-import { MD_STATE_KEY, storage } from '@/utils/storage'
 import { changeSyncScroll } from '@/utils/scroll'
 
 import { Checkbox, Dropdown, Menu } from 'antd'
@@ -29,71 +28,64 @@ import ThemeIcon from '../icons/theme'
 import MultiFile from '../multiFile'
 
 import styles from './index.module.less'
+import { useFile } from '@/context/file'
+import { ACTION_TYPE } from '@/context/file/reducer'
 
 interface IProps {
   editor: HTMLTextAreaElement | null // 编辑元素
-  source: string // markdown内容
-  setSource: (v: string) => void // 修改markdown内容
   setShowToc: () => void // 修改目录展示状态
 }
 
-const Toolbar: React.FC<IProps> = ({
-  editor,
-  source,
-  setSource,
-  setShowToc
-}) => {
-  const [codeTheme, setCodeTheme] = useState(CODE_THEME.a11yDark)
-
-  // 初始化缓存获取主题
-  useEffect(() => {
-    const storageData = storage.get(MD_STATE_KEY)
-    if (storageData) {
-      const { codeTheme } = storageData
-      setCodeTheme(codeTheme)
-    }
-  }, [])
+const Toolbar: React.FC<IProps> = ({ editor, setShowToc }) => {
+  const { file, dispatch } = useFile()
 
   // 点击文字改变
   const clickTextStatus = (type: TEXT_STATUS) => {
     if (editor) {
-      changeSelectTextStatus(editor, source, setSource, type)
+      changeSelectTextStatus(editor, file.content, changeContent, type)
     }
   }
 
   // 点击行状态改变
   const clickLineStatus = (type: LINE_STATUS) => {
     if (editor) {
-      changeSelectLineStatus(editor, source, setSource, type)
+      changeSelectLineStatus(editor, file.content, changeContent, type)
     }
+  }
+
+  const changeContent = (val: string) => {
+    dispatch({
+      type: ACTION_TYPE.CHANGE_CONTENT,
+      payload: val
+    })
   }
 
   const CodeThemeMenu = useMemo(
     () => (
       <Menu
         onClick={({ key }) => {
-          setCodeTheme(key)
-          storage.set(MD_STATE_KEY, {
-            codeTheme: key
+          dispatch({
+            type: ACTION_TYPE.CHANGE_STATE,
+            payload: key
           })
         }}
         items={Object.values(CODE_THEME).map((val) => ({
           label: val,
           key: val
         }))}
-        selectedKeys={[codeTheme]}
+        selectedKeys={[file.state.codeTheme]}
       />
     ),
-    [codeTheme]
+    [file.state.codeTheme]
   )
   useEffect(() => {
-    if (codeTheme) {
+    if (file.state.codeTheme) {
       switchLink(
         'code-style',
-        `https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/${codeTheme}.min.css`
+        `https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/${file.state.codeTheme}.min.css`
       )
     }
-  }, [codeTheme])
+  }, [file.state.codeTheme])
 
   return (
     <div className={styles.toolBar}>
@@ -149,7 +141,7 @@ const Toolbar: React.FC<IProps> = ({
         className={styles.item}
         onClick={() => {
           if (editor) {
-            addLink(editor, source, setSource)
+            addLink(editor, file.content, changeContent)
           }
         }}
       >
@@ -159,7 +151,7 @@ const Toolbar: React.FC<IProps> = ({
         className={styles.item}
         onClick={() => {
           if (editor) {
-            addTable(editor, source, setSource)
+            addTable(editor, file.content, changeContent)
           }
         }}
       >
@@ -169,7 +161,7 @@ const Toolbar: React.FC<IProps> = ({
         className={styles.item}
         onClick={() => {
           if (editor) {
-            addImage(editor, source, setSource)
+            addImage(editor, file.content, changeContent)
           }
         }}
       >

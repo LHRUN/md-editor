@@ -7,18 +7,18 @@ export interface FileData {
   title: string
   key: string
   parent: string
-  source?: string
-  state?: MARKDOWN_STATE
+  content: string
+  state: MARKDOWN_STATE
   isLeaf: boolean
   children?: FileData[]
 }
 
-export const defaultMultiFileData = [
+export const defaultMultiFileData: FileData[] = [
   {
     title: 'Learning',
     key: '0-0',
     parent: '0',
-    source: '',
+    content: '',
     isLeaf: false,
     state: {
       codeTheme: CODE_THEME.a11yDark
@@ -28,7 +28,7 @@ export const defaultMultiFileData = [
     title: 'empty',
     key: '0-0-0',
     parent: '0-0',
-    source: '',
+    content: '',
     isLeaf: true,
     state: {
       codeTheme: CODE_THEME.a11yDark
@@ -38,7 +38,7 @@ export const defaultMultiFileData = [
     title: 'Work',
     key: '0-1',
     parent: '0',
-    source: '',
+    content: '',
     isLeaf: false,
     state: {
       codeTheme: CODE_THEME.a11yDark
@@ -48,7 +48,7 @@ export const defaultMultiFileData = [
     title: 'empty',
     key: '0-1-0',
     parent: '0-1',
-    source: '',
+    content: '',
     isLeaf: true,
     state: {
       codeTheme: CODE_THEME.a11yDark
@@ -58,7 +58,7 @@ export const defaultMultiFileData = [
     title: 'Demo',
     key: '0-2',
     parent: '0',
-    source: '',
+    content: '',
     isLeaf: true,
     state: {
       codeTheme: CODE_THEME.a11yDark

@@ -1,8 +1,14 @@
 import Editor from '@/views/editor'
+import { AppProviders } from './context'
+
 import './App.css'
 
 function App() {
-  return <Editor />
+  return (
+    <AppProviders>
+      <Editor />
+    </AppProviders>
+  )
 }
 
 export default App
