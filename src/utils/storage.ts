@@ -93,7 +93,7 @@ export const getFileStorageData = (): {
     storage.deleteKey(MD_STATE_KEY)
     const storageData = {
       fileData,
-      version: import.meta.env.VERSION,
+      version: import.meta.env.VITE_APP_VERSION,
       currentKey: fileData[0].key
     }
     storage.set(MD_FILE_KEY, storageData)
@@ -121,7 +121,7 @@ export const getFileStorageData = (): {
   // new User
   const storageData = {
     fileData: defaultMultiFileData,
-    version: import.meta.env.VERSION,
+    version: import.meta.env.VITE_APP_VERSION,
     currentKey: '0-2'
   }
   const currentData = storageData.fileData.find(
@@ -141,6 +141,6 @@ export const setFileStorageData = (
   storage.set(MD_FILE_KEY, {
     fileData,
     currentKey,
-    version: import.meta.env.VERSION
+    version: import.meta.env.VITE_APP_VERSION
   })
 }
