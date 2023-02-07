@@ -58,7 +58,37 @@ export const defaultMultiFileData: FileData[] = [
     title: 'Demo',
     key: '0-2',
     parent: '0',
-    content: '',
+    content: `| name | code |
+| --- | --- |
+| Stephon Song| 1 |
+\`\`\`js
+const name = 'Stephon Song'
+const code = 1
+\`\`\`
+****
+# level1
+## level2
+### level3
+#### level4
+##### level5
+###### level6
+****
+**BOLD**
+~~DELETE~~
+_ITALIC_
+<u>UNDERLINE<u>
++ 1
+    - 1.1
++ 2
+
+[md-editor](https://github.com/LHRUN/md-editor)
+- [x] Menu Edit Button
+- [x] Code Block Theme Switch
+- [x] Sync scrolling
+- [x] Generate toc list
+- [x] Content state local cache
+- [x] Multi file tree records
+- [x] Download and upload file`,
     isLeaf: true,
     state: {
       codeTheme: CODE_THEME.a11yDark
