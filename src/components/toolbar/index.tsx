@@ -9,16 +9,11 @@ import {
 import { CODE_THEME, LINE_STATUS, TEXT_STATUS } from '@/utils/constants'
 import { switchLink } from '@/utils/common'
 import { changeSyncScroll } from '@/utils/scroll'
+import { useFile } from '@/context/file'
+import { ACTION_TYPE } from '@/context/file/reducer'
+import { lineConfig, textConfig } from './config'
 
 import { Checkbox, Dropdown, Menu } from 'antd'
-import BoldIcon from '../icons/bold'
-import DeleteIcon from '../icons/delete'
-import ItalicIcon from '../icons/italic'
-import UnderlineIcon from '../icons/underline'
-import OlIcon from '../icons/ol'
-import UlIcon from '../icons/ul'
-import TodoIcon from '../icons/todo'
-import QuoteIcon from '../icons/quote'
 import LinkIcon from '../icons/link'
 import TableIcon from '../icons/table'
 import ImgIcon from '../icons/img'
@@ -28,25 +23,23 @@ import ThemeIcon from '../icons/theme'
 import MultiFile from '../multiFile'
 
 import styles from './index.module.less'
-import { useFile } from '@/context/file'
-import { ACTION_TYPE } from '@/context/file/reducer'
 
 interface IProps {
-  editor: HTMLTextAreaElement | null // 编辑元素
-  setShowToc: () => void // 修改目录展示状态
+  editor: HTMLTextAreaElement | null // editor element
+  setShowToc: () => void // Change toc display status
 }
 
 const Toolbar: React.FC<IProps> = ({ editor, setShowToc }) => {
   const { file, dispatch } = useFile()
 
-  // 点击文字改变
+  // Click text to change
   const clickTextStatus = (type: TEXT_STATUS) => {
     if (editor) {
       changeSelectTextStatus(editor, file.content, changeContent, type)
     }
   }
 
-  // 点击行状态改变
+  // Click line to change
   const clickLineStatus = (type: LINE_STATUS) => {
     if (editor) {
       changeSelectLineStatus(editor, file.content, changeContent, type)
@@ -89,54 +82,24 @@ const Toolbar: React.FC<IProps> = ({ editor, setShowToc }) => {
 
   return (
     <div className={styles.toolBar}>
-      <div
-        className={styles.item}
-        onClick={() => clickTextStatus(TEXT_STATUS.STRONG)}
-      >
-        <BoldIcon />
-      </div>
-      <div
-        className={styles.item}
-        onClick={() => clickTextStatus(TEXT_STATUS.DELETE)}
-      >
-        <DeleteIcon />
-      </div>
-      <div
-        className={styles.item}
-        onClick={() => clickTextStatus(TEXT_STATUS.ITALIC)}
-      >
-        <ItalicIcon />
-      </div>
-      <div
-        className={styles.item}
-        onClick={() => clickTextStatus(TEXT_STATUS.UNDERLINE)}
-      >
-        <UnderlineIcon />
-      </div>
-      <div
-        className={styles.item}
-        onClick={() => clickLineStatus(LINE_STATUS.OL)}
-      >
-        <OlIcon />
-      </div>
-      <div
-        className={styles.item}
-        onClick={() => clickLineStatus(LINE_STATUS.UL)}
-      >
-        <UlIcon />
-      </div>
-      <div
-        className={styles.item}
-        onClick={() => clickLineStatus(LINE_STATUS.TODO)}
-      >
-        <TodoIcon />
-      </div>
-      <div
-        className={styles.item}
-        onClick={() => clickLineStatus(LINE_STATUS.QUOTE)}
-      >
-        <QuoteIcon />
-      </div>
+      {textConfig.map(({ icon, status }) => (
+        <div
+          key={status}
+          className={styles.item}
+          onClick={() => clickTextStatus(status)}
+        >
+          {icon}
+        </div>
+      ))}
+      {lineConfig.map(({ icon, status }) => (
+        <div
+          key={status}
+          className={styles.item}
+          onClick={() => clickLineStatus(status)}
+        >
+          {icon}
+        </div>
+      ))}
       <div
         className={styles.item}
         onClick={() => {
