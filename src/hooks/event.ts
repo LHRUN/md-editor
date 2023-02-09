@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
 /**
- * 监听window resize hook
- * @param cb resize回调
+ * Listening to window resizing
+ * @param cb resize callback
  */
 export const useResizeEvent = (cb: () => void) => {
   useEffect(() => {

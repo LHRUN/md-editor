@@ -13,12 +13,12 @@ import Token from 'markdown-it/lib/token'
 import { Toc } from './toc'
 
 /**
- * 初始化Markdown-it
+ * init Markdown-it
  */
 export const MD = new MarkdownIt({
-  html: true, // 在源码中启用 HTML 标签
-  linkify: true, // 将类似 URL 的文本自动转换为链接
-  breaks: true, // 转换段落里的 '\n' 到 <br>
+  html: true, // Enable HTML tags in source
+  linkify: true, // Autoconvert URL-like text to links
+  breaks: true, // Convert '\n' in paragraphs into <br>
   highlight: function (str, lang) {
     return highlightFormatCode(str, lang)
   }
@@ -32,7 +32,7 @@ export const MD = new MarkdownIt({
   .use(markdownItFootnote)
 
 /**
- * 格式化代码块
+ * Formatting code blocks
  * @param str
  * @param lang
  */
@@ -49,7 +49,7 @@ const highlightFormatCode = (str: string, lang: string): string => {
 }
 
 /**
- * 增加代码块样式
+ * Add code block style
  * @param val
  */
 const codeBlockStyle = (val: string): string => {
@@ -59,7 +59,7 @@ const codeBlockStyle = (val: string): string => {
 export const toc = new Toc()
 
 /**
- * 注入行号
+ * Inject line number
  */
 const injectLineNumbers: Renderer.RenderRule = (
   tokens,
@@ -78,7 +78,7 @@ const injectLineNumbers: Renderer.RenderRule = (
 }
 
 /**
- * 获取标题内容拼接目录列表
+ * Get the title content splice list
  */
 const getTitle = (tokens: Token[], idx: number) => {
   const { children } = tokens[idx + 1]

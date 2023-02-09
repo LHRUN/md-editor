@@ -1,11 +1,11 @@
 import { SCROLL_SCOPE } from './constants'
 
-const LINE_HEIGHT = 24 // 编辑器行高
+const LINE_HEIGHT = 24 // Editor line height
 
 /**
- * 获取编辑区域每行对应的预览偏移距离
- * @param editor 编辑元素
- * @param review 预览元素
+ * Get the preview offset distance for each line of the edit area
+ * @param editor editor dom
+ * @param review review dom
  * @returns number[]
  */
 const buildScrollMap = (
@@ -13,10 +13,10 @@ const buildScrollMap = (
   review: HTMLDivElement
 ) => {
   const lineHeightMap: number[] = []
-  let linesCount = 0 // 编辑区总行数
+  let totalLineCount = 0 // total number of lines in the editing area
 
   /**
-   * 临时创建元素获取每次换行之间的总行数
+   * Temporarily create elements to get the total number of lines between each line break
    */
   const sourceLine = document.createElement('div')
   sourceLine.style.position = 'absolute'
@@ -39,12 +39,12 @@ const buildScrollMap = (
   })
   sourceLine.remove()
   lineHeightMap.push(acc)
-  linesCount = acc
+  totalLineCount = acc
 
-  const _scrollMap: number[] = new Array(linesCount).fill(-1) // 最终输出的偏移map
+  const _scrollMap: number[] = new Array(totalLineCount).fill(-1) // offset map of the final output
 
   /**
-   * 获取标记行号的offset距离
+   * Get the offset distance of the marker line number
    */
   const nonEmptyList = []
   nonEmptyList.push(0)
@@ -61,14 +61,14 @@ const buildScrollMap = (
     _scrollMap[t] = Math.round((el as HTMLElement).offsetTop - review.offsetTop)
   })
 
-  nonEmptyList.push(linesCount)
-  _scrollMap[linesCount] = review.scrollHeight
+  nonEmptyList.push(totalLineCount)
+  _scrollMap[totalLineCount] = review.scrollHeight
 
   /**
-   * 未标记行号的元素等比处理
+   * Unmarked elements are get proportionally
    */
   let pos = 0
-  for (let i = 1; i < linesCount; i++) {
+  for (let i = 1; i < totalLineCount; i++) {
     if (_scrollMap[i] !== -1) {
       pos++
       continue
@@ -84,11 +84,11 @@ const buildScrollMap = (
 }
 
 let scrollMap: number[] | null
-let curScroll = SCROLL_SCOPE.NULL // 当前滚动元素
-let syncScroll = true // 同步滚动状态
+let curScroll = SCROLL_SCOPE.NULL // cur scroll element
+let syncScroll = true // sync scroll status
 
 /**
- * 编辑器滚动
+ * editor area scroll
  * @param editor
  * @param preview
  */
@@ -114,7 +114,7 @@ export const editorScroll = (
 }
 
 /**
- * 预览区域滚动
+ * preview area scroll
  * @param editor
  * @param preview
  */
@@ -150,16 +150,10 @@ export const previewScroll = (
   editor.scrollTo({ top: LINE_HEIGHT * Number(line) })
 }
 
-/**
- * 清空滚动映射
- */
 export const clearScrollMap = () => {
   scrollMap = null
 }
 
-/**
- * 改变同步滚动状态
- */
 export const changeSyncScroll = (state: boolean) => {
   syncScroll = state
 }

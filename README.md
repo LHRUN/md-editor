@@ -9,7 +9,10 @@
 
 Link: [https://songlh.top/md-editor/](https://songlh.top/md-editor/)
 
-![](https://s1.ax1x.com/2022/10/12/xaMejs.jpg)
+<div align="left">
+   <img src="https://s1.ax1x.com/2023/02/07/pS2MWff.png"  height=340>
+   <img src="https://s1.ax1x.com/2023/02/07/pS2MRtP.png" height=340>
+</div>
 
 ## Document
 
@@ -21,6 +24,8 @@ Link: [https://songlh.top/md-editor/](https://songlh.top/md-editor/)
 - [x] Sync scrolling
 - [x] Generate toc list
 - [x] Content state local cache
+- [x] Multi file tree records
+- [x] Download and upload file
 
 ## Getting Started
 ```
@@ -32,18 +37,27 @@ pnpm run dev
 ## File List
 ```js
 ├─components        
-│  └─icons
+│  ├─icons
+│  ├─fileTitleModal // Change file title modal
+│  ├─multiFile // Multi file drawer
 │  └─toolbar // Top Menu
+│
+├─context        
+│  ├─file // multi file provider
+│  └─index // app provider
+│
 ├─hooks
-│  event.ts // event hook
+│  └─event.ts // event hook
+│
 ├─views
 │  └─editor // editor page
 └─utils
-  │  constants
-  │  common
-  │  editor // editor utils
-  │  md // markdown-it instance
-  │  scroll // sync scroll
-  │  storage // local cache
-  │  toc
+   ├─constants
+   ├─common
+   ├─editor // editor utils
+   ├─md // markdown-it instance
+   ├─scroll // sync scroll
+   ├─storage // local cache
+   ├─multiFile
+   └─toc
 ```

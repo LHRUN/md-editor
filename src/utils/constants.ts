@@ -1,58 +1,57 @@
-// 文本状态
 export enum TEXT_STATUS {
-  STRONG, // 加粗
-  DELETE, // 删除
-  ITALIC, // 斜体
-  UNDERLINE // 下划线
+  STRONG,
+  DELETE,
+  ITALIC,
+  UNDERLINE
 }
 
 export const textStatusObj = {
   [TEXT_STATUS.STRONG]: {
-    desc: '加粗',
+    desc: 'STRONG',
     symbol: '**'
   },
   [TEXT_STATUS.DELETE]: {
-    desc: '删除',
+    desc: 'DELETE',
     symbol: '~~'
   },
   [TEXT_STATUS.ITALIC]: {
-    desc: '斜体',
+    desc: 'ITALIC',
     symbol: '_'
   },
   [TEXT_STATUS.UNDERLINE]: {
-    desc: '下划线',
+    desc: 'UNDERLINE',
     symbol: '<u>'
   }
 }
 
-// 当前行状态
+// Current line status
 export enum LINE_STATUS {
-  UL, // 无序列表
-  OL, // 有序列表
-  TODO, // 任务列表
-  QUOTE // 引用
+  UL, // Unordered List
+  OL, // Ordered List
+  TODO, // Task List
+  QUOTE // Quote
 }
 
 export const lineStatusObj = {
   [LINE_STATUS.UL]: {
-    desc: '无序列表',
+    desc: 'UL',
     symbol: '- '
   },
   [LINE_STATUS.OL]: {
-    desc: '有序列表',
+    desc: 'OL',
     symbol: '1. '
   },
   [LINE_STATUS.TODO]: {
-    desc: '任务列表',
+    desc: 'TODO',
     symbol: '- [x] '
   },
   [LINE_STATUS.QUOTE]: {
-    desc: '引用',
+    desc: 'QUOTE',
     symbol: '> '
   }
 }
 
-// 代码主题
+// Code block theme
 export const CODE_THEME = {
   a11yDark: 'a11y-dark',
   a11yLight: 'a11y-light',
@@ -128,7 +127,6 @@ export const CODE_THEME = {
   xt256: 'st256'
 }
 
-// 滚动操作枚举
 export enum SCROLL_SCOPE {
   NULL,
   EDITOR,
