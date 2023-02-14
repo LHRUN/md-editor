@@ -25,6 +25,10 @@ const FileTitleModal: React.FC<IProps> = ({
       onOk={() => onOk(title)}
       onCancel={() => setIsModalOpen(false)}
       closable={false}
+      okButtonProps={{
+        style: { backgroundColor: '#000', borderColor: '#000' }
+      }}
+      bodyStyle={{ borderRadius: '16px' }}
     >
       <Input value={title} onChange={(e) => setTitle(e.target.value)} />
     </Modal>
