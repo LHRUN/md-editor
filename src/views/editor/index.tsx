@@ -9,7 +9,7 @@ import Toolbar from '@/components/toolbar'
 import styles from './index.module.less'
 import { useFile } from '@/context/file'
 import { ACTION_TYPE } from '@/context/file/reducer'
-
+import editorbg from '@/assets/imgs/editorbg.png'
 const { Header, Content } = Layout
 
 const Editor: React.FC = () => {
@@ -75,6 +75,7 @@ const Editor: React.FC = () => {
             onInput={(e) => {
               changeMdContent((e.target as HTMLInputElement).value)
             }}
+            style={{ backgroundImage: `url(${editorbg})` }}
             onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
           ></textarea>
           <div

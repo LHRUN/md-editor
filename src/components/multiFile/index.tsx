@@ -11,6 +11,7 @@ import { useFile } from '@/context/file'
 import { ACTION_TYPE } from '@/context/file/reducer'
 import UploadIcon from '../icons/upload'
 import DownloadIcon from '../icons/download'
+import iconText from '@/assets/imgs/iconText.png'
 
 const MultiFile: React.FC = () => {
   const { file, dispatch } = useFile()
@@ -74,7 +75,7 @@ const MultiFile: React.FC = () => {
         }}
         className={styles.titleContainer}
       >
-        <span>{fileData.title}</span>
+        <span className={styles.titleText}>{fileData.title}</span>
         <span
           onClick={() => {
             setEditTitleData(fileData)
@@ -200,25 +201,33 @@ const MultiFile: React.FC = () => {
         <MultiFileIcon />
       </div>
       <Drawer
-        title="Multi File"
         placement="right"
         extra={drawerExtra}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
+        width={400}
+        closeIcon={''}
       >
-        <Tree
-          defaultExpandedKeys={[file.curKey]}
-          titleRender={(node) => {
-            if (!isEditor) {
-              return node.title
-            }
-            return titleRender(node)
-          }}
-          selectedKeys={[file.curKey]}
-          showLine
-          onSelect={onSelect}
-          treeData={treeData}
-        />
+        <div className={styles.drawerContainer}>
+          <Tree
+            defaultExpandedKeys={[file.curKey]}
+            titleRender={(node) => {
+              if (!isEditor) {
+                return <div className={styles.titleText}>{node.title}</div>
+              }
+              return titleRender(node)
+            }}
+            selectedKeys={[file.curKey]}
+            showLine
+            rootStyle={{
+              overflowY: 'auto',
+              flex: '1'
+            }}
+            onSelect={onSelect}
+            treeData={treeData}
+          />
+          <img className={styles.drawerImg} src={iconText} alt="" />
+        </div>
       </Drawer>
       <FileTitleModal
         isModalOpen={isTitleModalOpen}
