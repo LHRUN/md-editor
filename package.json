@@ -1,7 +1,7 @@
 {
   "name": "md-editor",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,13 +10,18 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./"
   },
   "dependencies": {
+    "@wekanteam/markdown-it-mermaid": "^0.6.2",
     "antd": "^4.23.4",
     "highlight.js": "^11.6.0",
     "markdown-it": "^13.0.1",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-deflist": "^2.1.0",
+    "markdown-it-emoji": "^2.0.2",
     "markdown-it-footnote": "^3.0.3",
+    "markdown-it-ins": "^3.0.1",
+    "markdown-it-katex": "^2.0.3",
     "markdown-it-mark": "^3.0.1",
+    "markdown-it-mermaid": "^0.2.5",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-it-task-lists": "^2.1.1",

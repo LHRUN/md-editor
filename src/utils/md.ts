@@ -7,6 +7,10 @@ import MarkdownItDeflist from 'markdown-it-deflist'
 import MarkdownItTaskLists from 'markdown-it-task-lists'
 import markdownItAbbr from 'markdown-it-abbr'
 import markdownItFootnote from 'markdown-it-footnote'
+import markdownItEmoji from 'markdown-it-emoji'
+import markdownItIns from 'markdown-it-ins'
+import markdownItKatex from 'markdown-it-katex'
+import markdownItMermaid from '@wekanteam/markdown-it-mermaid'
 
 import Renderer from 'markdown-it/lib/renderer'
 import Token from 'markdown-it/lib/token'
@@ -30,6 +34,10 @@ export const MD = new MarkdownIt({
   .use(MarkdownItTaskLists)
   .use(markdownItAbbr)
   .use(markdownItFootnote)
+  .use(markdownItEmoji)
+  .use(markdownItIns)
+  .use(markdownItKatex)
+  .use(markdownItMermaid)
 
 /**
  * Formatting code blocks
