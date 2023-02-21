@@ -1,7 +1,5 @@
-import React, { useMemo, useRef, useState } from 'react'
-import { MD, toc } from '@/utils/md'
+import React, { useRef, useState } from 'react'
 import { clearScrollMap, editorScroll, previewScroll } from '@/utils/scroll'
-import { ITitle } from '@/utils/toc'
 import { useResizeEvent } from '@/hooks/event'
 
 import { Layout } from 'antd'
@@ -10,26 +8,19 @@ import styles from './index.module.less'
 import { useFile } from '@/context/file'
 import { ACTION_TYPE } from '@/context/file/reducer'
 import editorbg from '@/assets/imgs/editorbg.png'
+import { VIEW_STATE } from '@/utils/constants'
 const { Header, Content } = Layout
 
+let contentTimer: NodeJS.Timeout
 const Editor: React.FC = () => {
   const { file, dispatch } = useFile()
+  const [isInput, setIsInput] = useState(false)
+  // const [viewState, setViewState] = useState(VIEW_STATE.PREVIEW)
   const editorRef = useRef<HTMLTextAreaElement>(null) // edit area ref
   const previewRef = useRef<HTMLDivElement>(null) // preview area ref
   const [showToc, setShowToc] = useState(false) // toc display
-  const [titleList, setTitleList] = useState<ITitle[]>([]) // title list
 
   useResizeEvent(clearScrollMap)
-
-  /**
-   * Get the converted html string and get the title list
-   */
-  const htmlStr = useMemo(() => {
-    toc.clear()
-    const str = MD.render(file.content)
-    setTitleList(toc.get())
-    return str
-  }, [file.content])
 
   /**
    * change markdown content
@@ -41,6 +32,11 @@ const Editor: React.FC = () => {
       payload: content
     })
     clearScrollMap()
+    setIsInput(true)
+    contentTimer && clearTimeout(contentTimer)
+    contentTimer = setTimeout(() => {
+      setIsInput(false)
+    }, 50)
   }
 
   /**
@@ -52,8 +48,13 @@ const Editor: React.FC = () => {
     if (editorRef.current && previewRef.current) {
       if (nodeName === 'TEXTAREA') {
         editorScroll(editorRef.current, previewRef.current)
-      } else {
-        previewScroll(editorRef.current, previewRef.current)
+      } else if (nodeName === 'DIV') {
+        const { scrollHeight, scrollTop, clientHeight } = editorRef.current
+        if (isInput && scrollHeight - clientHeight < scrollTop + 6) {
+          previewRef.current.scrollTop = previewRef.current.scrollHeight
+        } else {
+          previewScroll(editorRef.current, previewRef.current)
+        }
       }
     }
   }
@@ -68,28 +69,35 @@ const Editor: React.FC = () => {
       </Header>
       <Content>
         <div className={styles.container}>
-          <textarea
-            className={`${styles.content} ${styles.editorTextarea}`}
-            ref={editorRef}
-            value={file.content}
-            onInput={(e) => {
-              changeMdContent((e.target as HTMLInputElement).value)
-            }}
-            style={{ backgroundImage: `url(${editorbg})` }}
-            onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
-          ></textarea>
-          <div
-            id="write"
-            ref={previewRef}
-            className={`${styles.content} ${styles.write}`}
-            dangerouslySetInnerHTML={{ __html: htmlStr }}
-            onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
-          ></div>
+          {(file.viewState === VIEW_STATE.ALL ||
+            file.viewState === VIEW_STATE.EDITOR) && (
+            <textarea
+              className={`${styles.content} ${styles.editorTextarea}`}
+              ref={editorRef}
+              value={file.content}
+              onInput={(e) => {
+                changeMdContent((e.target as HTMLInputElement).value)
+              }}
+              style={{ backgroundImage: `url(${editorbg})` }}
+              onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
+            ></textarea>
+          )}
+          {(file.viewState === VIEW_STATE.ALL ||
+            file.viewState === VIEW_STATE.PREVIEW) && (
+            <div
+              id="write"
+              ref={previewRef}
+              className={`${styles.content} ${styles.write}`}
+              dangerouslySetInnerHTML={{ __html: file.htmlStr }}
+              onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
+            ></div>
+          )}
+
           {showToc && (
             <div className={styles.toc}>
               <div className={styles.tocTitle}>TOC</div>
               <div>
-                {titleList.map(({ val, level }, index) => {
+                {file.titleList.map(({ val, level }, index) => {
                   const fontSize = ((7 - level) / 10) * 40
 
                   return (

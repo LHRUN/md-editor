@@ -8,6 +8,8 @@ import {
 } from 'react'
 import { FileAction, FileReducer, fileReducer, FileState } from './reducer'
 import { getFileStorageData } from '@/utils/storage'
+import { MD, toc } from '@/utils/md'
+import { VIEW_STATE } from '@/utils/constants'
 
 const FileContext = createContext<{
   file: FileState
@@ -19,6 +21,9 @@ const fileInitState = getFileStorageData()
 export const FileProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [file, dispatch] = useReducer<FileReducer>(fileReducer, {
     content: fileInitState.currentData.content,
+    htmlStr: MD.render(fileInitState.currentData.content),
+    viewState: VIEW_STATE.ALL,
+    titleList: toc.get(),
     state: fileInitState.currentData.state,
     curKey: fileInitState.currentKey,
     multiFileData: fileInitState.storageData.fileData

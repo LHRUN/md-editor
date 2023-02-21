@@ -6,7 +6,12 @@ import {
   changeSelectLineStatus,
   changeSelectTextStatus
 } from '@/utils/editor'
-import { CODE_THEME, LINE_STATUS, TEXT_STATUS } from '@/utils/constants'
+import {
+  CODE_THEME,
+  LINE_STATUS,
+  TEXT_STATUS,
+  VIEW_STATE
+} from '@/utils/constants'
 import { switchLink } from '@/utils/common'
 import { changeSyncScroll } from '@/utils/scroll'
 import { useFile } from '@/context/file'
@@ -23,6 +28,9 @@ import ThemeIcon from '../icons/theme'
 import MultiFile from '../multiFile'
 
 import styles from './index.module.less'
+import EditViewIcon from '../icons/editView'
+import ColumnIcon from '../icons/column'
+import PreviewIcon from '../icons/preview'
 
 interface IProps {
   editor: HTMLTextAreaElement | null // editor element
@@ -148,6 +156,14 @@ const Toolbar: React.FC<IProps> = ({ editor, setShowToc }) => {
         >
           sync scroll
         </Checkbox>
+        <div
+          onClick={() => dispatch({ type: ACTION_TYPE.CHANGE_VIEW_STATE })}
+          className={styles.item}
+        >
+          {file.viewState === VIEW_STATE.EDITOR && <EditViewIcon />}
+          {file.viewState === VIEW_STATE.ALL && <ColumnIcon />}
+          {file.viewState === VIEW_STATE.PREVIEW && <PreviewIcon />}
+        </div>
         <div onClick={() => setShowToc()} className={styles.item}>
           <TocIcon />
         </div>

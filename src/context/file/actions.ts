@@ -1,6 +1,7 @@
 import { MARKDOWN_STATE, setFileStorageData } from '@/utils/storage'
 import { FileState } from './reducer'
-import { CODE_THEME } from '@/utils/constants'
+import { CODE_THEME, VIEW_STATE } from '@/utils/constants'
+import { MD, toc } from '@/utils/md'
 
 /**
  * change markdown content
@@ -12,9 +13,12 @@ export const changeContentAction = (oldState: FileState, content: string) => {
   if (index !== -1) {
     oldState.multiFileData[index].content = content
   }
+  toc.clear()
   const newState = {
     ...oldState,
-    content
+    content,
+    htmlStr: MD.render(content),
+    titleList: toc.get()
   }
   setFileStorageData(newState.multiFileData, newState.curKey)
   return newState
@@ -139,5 +143,30 @@ export const changeFileTitleAction = (
     multiFileData: newFileData
   }
   setFileStorageData(newState.multiFileData, newState.curKey)
+  return newState
+}
+
+/**
+ * Change page layout state
+ */
+export const changeViewState = (oldState: FileState) => {
+  let viewState = VIEW_STATE.ALL
+  switch (oldState.viewState) {
+    case VIEW_STATE.ALL:
+      viewState = VIEW_STATE.EDITOR
+      break
+    case VIEW_STATE.EDITOR:
+      viewState = VIEW_STATE.PREVIEW
+      break
+    case VIEW_STATE.PREVIEW:
+      viewState = VIEW_STATE.ALL
+      break
+    default:
+      break
+  }
+  const newState = {
+    ...oldState,
+    viewState
+  }
   return newState
 }

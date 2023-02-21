@@ -132,3 +132,9 @@ export enum SCROLL_SCOPE {
   EDITOR,
   PREVIEW
 }
+
+export enum VIEW_STATE {
+  PREVIEW,
+  EDITOR,
+  ALL
+}
