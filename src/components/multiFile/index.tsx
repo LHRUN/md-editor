@@ -34,6 +34,9 @@ const MultiFile: React.FC = () => {
     [file.multiFileData]
   )
 
+  /**
+   * click file
+   */
   const onSelect = (_selectedKeys: React.Key[], info: { node: FileData }) => {
     if (info.node.isLeaf) {
       dispatch({
@@ -43,6 +46,9 @@ const MultiFile: React.FC = () => {
     }
   }
 
+  /**
+   * drag and drop file
+   */
   const onDrop = (info: DropInfo) => {
     dispatch({
       type: ACTION_TYPE.SORT_FILE,

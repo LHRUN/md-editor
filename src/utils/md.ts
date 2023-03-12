@@ -10,7 +10,7 @@ import markdownItFootnote from 'markdown-it-footnote'
 import markdownItEmoji from 'markdown-it-emoji'
 import markdownItIns from 'markdown-it-ins'
 import markdownItKatex from 'markdown-it-katex'
-import markdownItMermaid from '@wekanteam/markdown-it-mermaid'
+import markdownItTextualUml from 'markdown-it-textual-uml'
 
 import Renderer from 'markdown-it/lib/renderer'
 import Token from 'markdown-it/lib/token'
@@ -37,7 +37,7 @@ export const MD = new MarkdownIt({
   .use(markdownItEmoji)
   .use(markdownItIns)
   .use(markdownItKatex)
-  .use(markdownItMermaid)
+  .use(markdownItTextualUml)
 
 /**
  * Formatting code blocks
