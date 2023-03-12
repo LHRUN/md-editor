@@ -1,3 +1,15 @@
+# 0.2.2 (2023-03-12)
+
+### Feat
+
+- Support UML and Katex syntax
+- ADD file drag and drop
+- ADD view switch
+
+### Chore
+
+- Add StyleLint
+
 # 0.2.1 (2023-02-14)
 
 ### Feat
