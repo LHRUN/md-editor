@@ -1,6 +1,7 @@
 import { SCROLL_SCOPE } from './constants'
 
 const LINE_HEIGHT = 24 // Editor line height
+let scrollTimer: NodeJS.Timeout
 
 /**
  * Get the preview offset distance for each line of the edit area
@@ -99,11 +100,12 @@ export const editorScroll = (
   if (!syncScroll) {
     return
   }
-  if (curScroll === SCROLL_SCOPE.PREVIEW) {
+  if (curScroll === SCROLL_SCOPE.NULL) {
     curScroll = SCROLL_SCOPE.EDITOR
+  }
+  if (curScroll === SCROLL_SCOPE.PREVIEW) {
     return
   }
-  curScroll = SCROLL_SCOPE.EDITOR
   if (!scrollMap) {
     scrollMap = buildScrollMap(editor, preview)
   }
@@ -111,6 +113,14 @@ export const editorScroll = (
   const lineNo = Math.floor(editor.scrollTop / LINE_HEIGHT)
   const posTo = scrollMap[lineNo]
   preview.scrollTo({ top: posTo })
+
+  if (scrollTimer) {
+    clearTimeout(scrollTimer)
+  }
+  scrollTimer = setTimeout(() => {
+    curScroll = SCROLL_SCOPE.NULL
+    scrollTimer && clearTimeout(scrollTimer)
+  }, 100)
 }
 
 /**
@@ -125,11 +135,12 @@ export const previewScroll = (
   if (!syncScroll) {
     return
   }
-  if (curScroll === SCROLL_SCOPE.EDITOR) {
+  if (curScroll === SCROLL_SCOPE.NULL) {
     curScroll = SCROLL_SCOPE.PREVIEW
+  }
+  if (curScroll === SCROLL_SCOPE.EDITOR) {
     return
   }
-  curScroll = SCROLL_SCOPE.PREVIEW
 
   if (!scrollMap) {
     scrollMap = buildScrollMap(editor, preview)
@@ -148,6 +159,14 @@ export const previewScroll = (
     break
   }
   editor.scrollTo({ top: LINE_HEIGHT * Number(line) })
+
+  if (scrollTimer) {
+    clearTimeout(scrollTimer)
+  }
+  scrollTimer = setTimeout(() => {
+    curScroll = SCROLL_SCOPE.NULL
+    scrollTimer && clearTimeout(scrollTimer)
+  }, 200)
 }
 
 export const clearScrollMap = () => {

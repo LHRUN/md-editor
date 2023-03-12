@@ -28,15 +28,17 @@ export const changeSelectTextStatus = (
   type: TEXT_STATUS
 ) => {
   const [start, end] = getCursorPosition(editor)
-  const { symbol } = textStatusObj[type]
+  const { symbolStart, symbolEnd } = textStatusObj[type]
   let val = content
   if (start === end) {
-    val = `${content.slice(0, start)}${symbol}${symbol}${content.slice(end)}`
+    val = `${content.slice(0, start)}${symbolStart}${symbolEnd}${content.slice(
+      end
+    )}`
   } else {
-    val = `${content.slice(0, start)}${symbol}${content.slice(
+    val = `${content.slice(0, start)}${symbolStart}${content.slice(
       start,
       end
-    )}${symbol}${content.slice(end)}`
+    )}${symbolEnd}${content.slice(end)}`
   }
   setContent(val)
 }

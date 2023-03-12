@@ -1,8 +1,13 @@
-#root,body,html {
+#root,
+body,
+html {
   height: 100%;
 }
 
-.layout{
-  min-height:100%;
+body {
+  overflow: hidden;
 }
 
+.layout {
+  min-height: 100%;
+}

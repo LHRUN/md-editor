@@ -1,4 +1,4 @@
-import { CODE_THEME } from '@/utils/constants'
+import { VIEW_STATE } from '@/utils/constants'
 import { FileData } from '@/utils/multiFile'
 import { MARKDOWN_STATE } from '@/utils/storage'
 import {
@@ -7,11 +7,17 @@ import {
   changeFileTitleAction,
   changeContentAction,
   changeStateAction,
-  deleteFileAction
+  deleteFileAction,
+  changeViewState,
+  sortFileAction
 } from './actions'
+import { ITitle } from '@/utils/toc'
 
 export interface FileState {
   content: string
+  htmlStr: string
+  viewState: VIEW_STATE
+  titleList: ITitle[]
   state: MARKDOWN_STATE
   curKey: string
   multiFileData: FileData[]
@@ -31,16 +37,9 @@ export const ACTION_TYPE = {
   CHANGE_STATE: 'changeState',
   ADD_FILE: 'addFile',
   DELTE_FILE: 'deleteFile',
-  CHANGE_FILE_TITLE: 'changeFileTitle'
-}
-
-export const fileInitState: FileState = {
-  content: '',
-  state: {
-    codeTheme: CODE_THEME.a11yDark
-  },
-  curKey: '',
-  multiFileData: []
+  SORT_FILE: 'sortFile',
+  CHANGE_FILE_TITLE: 'changeFileTitle',
+  CHANGE_VIEW_STATE: 'changeViewState'
 }
 
 export const fileReducer: FileReducer = (state, action) => {
@@ -61,6 +60,10 @@ export const fileReducer: FileReducer = (state, action) => {
         action.payload.key,
         action.payload.title
       )
+    case ACTION_TYPE.CHANGE_VIEW_STATE:
+      return changeViewState(state)
+    case ACTION_TYPE.SORT_FILE:
+      return sortFileAction(state, action.payload.info)
     default:
       return state
   }

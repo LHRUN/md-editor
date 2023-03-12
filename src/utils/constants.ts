@@ -8,19 +8,23 @@ export enum TEXT_STATUS {
 export const textStatusObj = {
   [TEXT_STATUS.STRONG]: {
     desc: 'STRONG',
-    symbol: '**'
+    symbolStart: '**',
+    symbolEnd: '**'
   },
   [TEXT_STATUS.DELETE]: {
     desc: 'DELETE',
-    symbol: '~~'
+    symbolStart: '~~',
+    symbolEnd: '~~'
   },
   [TEXT_STATUS.ITALIC]: {
     desc: 'ITALIC',
-    symbol: '_'
+    symbolStart: '_',
+    symbolEnd: '_'
   },
   [TEXT_STATUS.UNDERLINE]: {
     desc: 'UNDERLINE',
-    symbol: '<u>'
+    symbolStart: '<ul>',
+    symbolEnd: '</ul>'
   }
 }
 
@@ -131,4 +135,10 @@ export enum SCROLL_SCOPE {
   NULL,
   EDITOR,
   PREVIEW
+}
+
+export enum VIEW_STATE {
+  PREVIEW,
+  EDITOR,
+  ALL
 }

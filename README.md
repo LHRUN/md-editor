@@ -27,19 +27,19 @@ Link: [https://songlh.top/md-editor/](https://songlh.top/md-editor/)
 - [x] Content state local cache
 - [x] Multi file tree records
 - [x] Download and upload file
+- [x] Support UML and Katex syntax
 
 ## Getting Started
 ```
 git clone https://github.com/LHRUN/md-editor.git
 pnpm install
-pnpm run dev
+pnpm dev
 ```
 
 ## File List
 ```js
 ├─components        
 │  ├─icons
-│  ├─fileTitleModal // Change file title modal
 │  ├─multiFile // Multi file drawer
 │  └─toolbar // Top Menu
 │
@@ -52,6 +52,7 @@ pnpm run dev
 │
 ├─views
 │  └─editor // editor page
+│
 └─utils
    ├─constants
    ├─common

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Input, Modal } from 'antd'
 
-interface IProps {
+interface FileTitleModalProps {
   isModalOpen: boolean
   setIsModalOpen: (state: boolean) => void
   defaultTitle: string
   onOk: (title: string) => void
 }
 
-const FileTitleModal: React.FC<IProps> = ({
+const FileTitleModal: React.FC<FileTitleModalProps> = ({
   isModalOpen,
   setIsModalOpen,
   defaultTitle,
