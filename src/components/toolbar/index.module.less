@@ -2,25 +2,27 @@
   display: flex;
   align-items: center;
   width: 100%;
+  overflow-x: auto;
 
   .right {
-    margin-left: auto;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
+    margin-left: auto;
   }
 
   .item {
-    margin-right: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     width: 27px;
     height: 27px;
+    margin-right: 7px;
+    cursor: pointer;
     border-radius: 5px;
 
     &:hover {
-      background-color: rgba(0,0,0,0.1);
+      background-color: rgb(0 0 0 / 10%);
     }
   }
 }
