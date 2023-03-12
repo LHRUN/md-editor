@@ -8,7 +8,8 @@ import {
   changeContentAction,
   changeStateAction,
   deleteFileAction,
-  changeViewState
+  changeViewState,
+  sortFileAction
 } from './actions'
 import { ITitle } from '@/utils/toc'
 
@@ -36,6 +37,7 @@ export const ACTION_TYPE = {
   CHANGE_STATE: 'changeState',
   ADD_FILE: 'addFile',
   DELTE_FILE: 'deleteFile',
+  SORT_FILE: 'sortFile',
   CHANGE_FILE_TITLE: 'changeFileTitle',
   CHANGE_VIEW_STATE: 'changeViewState'
 }
@@ -60,6 +62,8 @@ export const fileReducer: FileReducer = (state, action) => {
       )
     case ACTION_TYPE.CHANGE_VIEW_STATE:
       return changeViewState(state)
+    case ACTION_TYPE.SORT_FILE:
+      return sortFileAction(state, action.payload.info)
     default:
       return state
   }

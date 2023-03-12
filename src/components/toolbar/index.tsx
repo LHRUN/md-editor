@@ -32,12 +32,12 @@ import EditViewIcon from '../icons/editView'
 import ColumnIcon from '../icons/column'
 import PreviewIcon from '../icons/preview'
 
-interface IProps {
+interface ToolbarProps {
   editor: HTMLTextAreaElement | null // editor element
   setShowToc: () => void // Change toc display status
 }
 
-const Toolbar: React.FC<IProps> = ({ editor, setShowToc }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ editor, setShowToc }) => {
   const { file, dispatch } = useFile()
 
   // Click text to change

@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "pnpm lint:script && pnpm lint:style",
+    "lint": "pnpm lint:code && pnpm lint:style",
     "lint:code": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./",
     "lint:style": "stylelint \"./**/*.{css,less}\" --fix"
   },
@@ -67,7 +67,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,tsx,ts}": [
-      "pnpm lint:script"
+      "pnpm lint:code"
     ],
     "*.{less,css}": [
       "pnpm lint:style"

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { clearScrollMap, editorScroll, previewScroll } from '@/utils/scroll'
 import { useResizeEvent } from '@/hooks/event'
 
@@ -15,11 +15,9 @@ let contentTimer: NodeJS.Timeout
 const Editor: React.FC = () => {
   const { file, dispatch } = useFile()
   const [isInput, setIsInput] = useState(false)
-  // const [viewState, setViewState] = useState(VIEW_STATE.PREVIEW)
-  const editorRef = useRef<HTMLTextAreaElement>(null) // edit area ref
-  const previewRef = useRef<HTMLDivElement>(null) // preview area ref
+  const [editorEl, setEditorEl] = useState<HTMLTextAreaElement | null>(null) // edit area element
+  const [previewEl, setPreviewEl] = useState<HTMLDivElement | null>(null) // preview area element
   const [showToc, setShowToc] = useState(false) // toc display
-
   useResizeEvent(clearScrollMap)
 
   /**
@@ -33,6 +31,12 @@ const Editor: React.FC = () => {
     })
     clearScrollMap()
     setIsInput(true)
+    if (editorEl && previewEl) {
+      const { scrollHeight, scrollTop, clientHeight } = editorEl
+      if (scrollHeight - clientHeight < scrollTop + 6) {
+        previewEl.scrollTop = previewEl.scrollHeight
+      }
+    }
     contentTimer && clearTimeout(contentTimer)
     contentTimer = setTimeout(() => {
       setIsInput(false)
@@ -45,15 +49,12 @@ const Editor: React.FC = () => {
    */
   const scrollHandle = (el: HTMLInputElement) => {
     const nodeName = el.nodeName
-    if (editorRef.current && previewRef.current) {
+    if (editorEl && previewEl) {
       if (nodeName === 'TEXTAREA') {
-        editorScroll(editorRef.current, previewRef.current)
+        editorScroll(editorEl, previewEl)
       } else if (nodeName === 'DIV') {
-        const { scrollHeight, scrollTop, clientHeight } = editorRef.current
-        if (isInput && scrollHeight - clientHeight < scrollTop + 6) {
-          previewRef.current.scrollTop = previewRef.current.scrollHeight
-        } else {
-          previewScroll(editorRef.current, previewRef.current)
+        if (!isInput) {
+          previewScroll(editorEl, previewEl)
         }
       }
     }
@@ -62,10 +63,7 @@ const Editor: React.FC = () => {
   return (
     <Layout className={styles.layout}>
       <Header className={styles.layoutHeader}>
-        <Toolbar
-          editor={editorRef.current}
-          setShowToc={() => setShowToc((v) => !v)}
-        />
+        <Toolbar editor={editorEl} setShowToc={() => setShowToc((v) => !v)} />
       </Header>
       <Content>
         <div className={styles.container}>
@@ -73,7 +71,7 @@ const Editor: React.FC = () => {
             file.viewState === VIEW_STATE.EDITOR) && (
             <textarea
               className={`${styles.content} ${styles.editorTextarea}`}
-              ref={editorRef}
+              ref={setEditorEl}
               value={file.content}
               onInput={(e) => {
                 changeMdContent((e.target as HTMLInputElement).value)
@@ -86,7 +84,7 @@ const Editor: React.FC = () => {
             file.viewState === VIEW_STATE.PREVIEW) && (
             <div
               id="write"
-              ref={previewRef}
+              ref={setPreviewEl}
               className={`${styles.content} ${styles.write}`}
               dangerouslySetInnerHTML={{ __html: file.htmlStr }}
               onScroll={(e) => scrollHandle(e.target as HTMLInputElement)}
